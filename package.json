@@ -1,0 +1,39 @@
+{
+  "name": "ai-review-action",
+  "version": "0.1.0",
+  "description": "GitHub Action to review pull requests using OpenAI",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MykolaFatkullin/ai-review-action.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/MykolaFatkullin/ai-review-action/issues"
+  },
+  "homepage": "https://github.com/MykolaFatkullin/ai-review-action#readme",
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
+    "openai": "^6.49.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.2"
+  }
+}

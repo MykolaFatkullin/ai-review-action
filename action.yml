@@ -1,0 +1,25 @@
+name: AI Review Action
+description: Review Pull Requests using OpenAI
+
+inputs:
+  github-token:
+    description: GitHub Token
+    required: true
+
+  openai-api-key:
+    description: OpenAI API Key
+    required: true
+
+  prompt-path:
+    description: Path to prompt directory
+    required: false
+    default: ".github/prompts"
+
+  model:
+    description: OpenAI model
+    required: false
+    default: "gpt-5.5"
+
+runs:
+  using: node20
+  main: dist/index.js
