@@ -11,5 +11,10 @@ export default defineConfig({
   dts: true,
   minify: false,
   splitting: false,
-  noExternal: [/.*/],
+  noExternal: [
+    /^@actions\//
+  ],
+  external: [
+    "openai"
+  ]
 });
