@@ -24327,8 +24327,11 @@ ${unplaceableSummary}`;
 
 // src/utils/parseGithubPatch.ts
 function extractRightSideLinesFromPatch(patch) {
+  return extractRightSideLineDetailsFromPatch(patch).map((line) => line.line);
+}
+function extractRightSideLineDetailsFromPatch(patch) {
   const lines = patch.split("\n");
-  const result = /* @__PURE__ */ new Set();
+  const result = [];
   let newLine = null;
   for (const line of lines) {
     const hunkMatch = line.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
@@ -24340,7 +24343,11 @@ function extractRightSideLinesFromPatch(patch) {
       continue;
     }
     if (line.startsWith("+") && !line.startsWith("+++")) {
-      result.add(newLine);
+      result.push({
+        line: newLine,
+        content: line.slice(1),
+        isAdded: true
+      });
       newLine++;
       continue;
     }
@@ -24348,7 +24355,11 @@ function extractRightSideLinesFromPatch(patch) {
       continue;
     }
     if (line.startsWith(" ")) {
-      result.add(newLine);
+      result.push({
+        line: newLine,
+        content: line.slice(1),
+        isAdded: false
+      });
       newLine++;
       continue;
     }
@@ -24356,7 +24367,7 @@ function extractRightSideLinesFromPatch(patch) {
       continue;
     }
   }
-  return [...result].sort((a, b) => a - b);
+  return result;
 }
 
 // src/github/GithubClient.ts
@@ -24409,7 +24420,8 @@ var GithubClient = class {
     return response.data.filter((file2) => file2.status !== "removed" && file2.patch).map((file2) => ({
       path: file2.filename,
       patch: file2.patch,
-      rightLines: extractRightSideLinesFromPatch(file2.patch)
+      rightLines: extractRightSideLinesFromPatch(file2.patch),
+      rightSideLines: extractRightSideLineDetailsFromPatch(file2.patch)
     }));
   }
   async publishReview(review) {
@@ -24495,13 +24507,13 @@ var PromptBuilder = class {
       - Use REQUEST_CHANGES when the pull request contains issues that should be fixed before merging.
       - Use COMMENT when only optional improvements or suggestions are found.
       - For each comment, "path" MUST exactly match one of the changed file paths.
-      - For each comment, "line" MUST be a line number from the new version of the file.
-      - For each comment, "line" MUST be one of the allowed RIGHT-side line numbers listed for that file.
+      - For each comment, "line" MUST be a line number from the RIGHT-side line-numbered view of that file.
+      - Prefer commenting on added lines marked with "+" in the RIGHT-side line-numbered view.
+      - If an issue is located on an added RIGHT-side line, you SHOULD add it to comments using that exact line number.
       - Never use line numbers from the old version of the file.
       - Never use line numbers from the markdown diff block itself.
       - Never comment on removed lines.
-      - Never comment on a line if you are not sure which allowed RIGHT-side line number it belongs to.
-      - If you find an important issue but cannot confidently map it to an allowed RIGHT-side line number, describe it in the summary instead of adding it to comments.
+      - Only put an issue in the summary without an inline comment when it cannot be mapped to any RIGHT-side line from the provided line-numbered view.
     `);
     userPrompts.push("# Pull Request");
     userPrompts.push(`Title: ${context3.title}`);
@@ -24513,6 +24525,13 @@ var PromptBuilder = class {
       userPrompts.push(`## ${file2.path}`);
       userPrompts.push("Allowed RIGHT-side line numbers for review comments:");
       userPrompts.push(file2.rightLines.length > 0 ? file2.rightLines.join(", ") : "none");
+      userPrompts.push("RIGHT-side line-numbered view:");
+      userPrompts.push("```text");
+      userPrompts.push(
+        file2.rightSideLines.map((line) => `${line.line}${line.isAdded ? " +" : "  "}: ${line.content}`).join("\n")
+      );
+      userPrompts.push("```");
+      userPrompts.push("Original diff:");
       userPrompts.push("```diff");
       userPrompts.push(file2.patch);
       userPrompts.push("```");

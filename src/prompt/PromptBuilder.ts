@@ -44,13 +44,13 @@ export class PromptBuilder {
       - Use REQUEST_CHANGES when the pull request contains issues that should be fixed before merging.
       - Use COMMENT when only optional improvements or suggestions are found.
       - For each comment, "path" MUST exactly match one of the changed file paths.
-      - For each comment, "line" MUST be a line number from the new version of the file.
-      - For each comment, "line" MUST be one of the allowed RIGHT-side line numbers listed for that file.
+      - For each comment, "line" MUST be a line number from the RIGHT-side line-numbered view of that file.
+      - Prefer commenting on added lines marked with "+" in the RIGHT-side line-numbered view.
+      - If an issue is located on an added RIGHT-side line, you SHOULD add it to comments using that exact line number.
       - Never use line numbers from the old version of the file.
       - Never use line numbers from the markdown diff block itself.
       - Never comment on removed lines.
-      - Never comment on a line if you are not sure which allowed RIGHT-side line number it belongs to.
-      - If you find an important issue but cannot confidently map it to an allowed RIGHT-side line number, describe it in the summary instead of adding it to comments.
+      - Only put an issue in the summary without an inline comment when it cannot be mapped to any RIGHT-side line from the provided line-numbered view.
     `);
 
     userPrompts.push("# Pull Request");
@@ -68,6 +68,16 @@ export class PromptBuilder {
       userPrompts.push("Allowed RIGHT-side line numbers for review comments:");
       userPrompts.push(file.rightLines.length > 0 ? file.rightLines.join(", ") : "none");
 
+      userPrompts.push("RIGHT-side line-numbered view:");
+      userPrompts.push("```text");
+      userPrompts.push(
+        file.rightSideLines
+          .map(line => `${line.line}${line.isAdded ? " +" : "  "}: ${line.content}`)
+          .join("\n"),
+      );
+      userPrompts.push("```");
+
+      userPrompts.push("Original diff:");
       userPrompts.push("```diff");
       userPrompts.push(file.patch);
       userPrompts.push("```");

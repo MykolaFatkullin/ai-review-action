@@ -1,6 +1,16 @@
+export interface RightSideLine {
+  line: number;
+  content: string;
+  isAdded: boolean;
+}
+
 export function extractRightSideLinesFromPatch(patch: string): number[] {
+  return extractRightSideLineDetailsFromPatch(patch).map(line => line.line);
+}
+
+export function extractRightSideLineDetailsFromPatch(patch: string): RightSideLine[] {
   const lines = patch.split("\n");
-  const result = new Set<number>();
+  const result: RightSideLine[] = [];
 
   let newLine: number | null = null;
 
@@ -17,7 +27,12 @@ export function extractRightSideLinesFromPatch(patch: string): number[] {
     }
 
     if (line.startsWith("+") && !line.startsWith("+++")) {
-      result.add(newLine);
+      result.push({
+        line: newLine,
+        content: line.slice(1),
+        isAdded: true,
+      });
+
       newLine++;
       continue;
     }
@@ -27,7 +42,12 @@ export function extractRightSideLinesFromPatch(patch: string): number[] {
     }
 
     if (line.startsWith(" ")) {
-      result.add(newLine);
+      result.push({
+        line: newLine,
+        content: line.slice(1),
+        isAdded: false,
+      });
+
       newLine++;
       continue;
     }
@@ -37,5 +57,5 @@ export function extractRightSideLinesFromPatch(patch: string): number[] {
     }
   }
 
-  return [...result].sort((a, b) => a - b);
+  return result;
 }
