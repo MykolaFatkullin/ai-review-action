@@ -11,10 +11,10 @@ export default defineConfig({
   dts: true,
   minify: false,
   splitting: false,
-  noExternal: [
-    /^@actions\//
-  ],
-  external: [
-    "openai"
-  ]
+  banner: {
+    js: `
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+`
+  }
 });
