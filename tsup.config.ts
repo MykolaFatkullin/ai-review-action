@@ -5,12 +5,21 @@ export default defineConfig({
   format: ["esm"],
   target: "node22",
   platform: "node",
+
   bundle: true,
-  clean: true,
-  sourcemap: true,
-  dts: true,
-  minify: false,
   splitting: false,
+  sourcemap: true,
+  clean: true,
+
+  dts: false,
+
+  noExternal: [
+    "@actions/core",
+    "@actions/github",
+    "zod",
+    "openai"
+  ],
+
   banner: {
     js: `
 import { createRequire } from 'module';
