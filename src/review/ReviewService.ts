@@ -2,6 +2,7 @@ import { GithubClient } from "../github/GithubClient.js";
 import { PromptLoader } from "../prompt/PromptLoader.js";
 import { PromptBuilder } from "../prompt/PromptBuilder.js";
 import { OpenAIClient } from "../openai/OpenAIClient.js";
+import * as core from "@actions/core";
 
 export class ReviewService {
   constructor(
@@ -12,6 +13,11 @@ export class ReviewService {
   ) {}
 
   async review(): Promise<void> {
+    if (!await this.github.isReviewRequired()) {
+      core.info("Skipping AI review: no new commits since the last review.");
+      return;
+    }
+
     const context = await this.github.getReviewContext();
 
     const files = await this.github.getChangedFiles();

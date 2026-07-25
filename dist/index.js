@@ -24265,6 +24265,10 @@ var ReviewService = class {
   promptBuilder;
   openAi;
   async review() {
+    if (!await this.github.isReviewRequired()) {
+      info("Skipping AI review: no new commits since the last review.");
+      return;
+    }
     const context3 = await this.github.getReviewContext();
     const files = await this.github.getChangedFiles();
     if (files.length === 0) {
