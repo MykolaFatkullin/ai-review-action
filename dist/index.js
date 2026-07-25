@@ -20196,6 +20196,9 @@ function setFailed(message) {
 function error(message, properties = {}) {
   issueCommand("error", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
+function warning(message, properties = {}) {
+  issueCommand("warning", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
 function info(message) {
   process.stdout.write(message + os3.EOL);
 }
@@ -20218,8 +20221,8 @@ var Config = class _Config {
     return new _Config(
       getInput("github-token", { required: true }),
       getInput("openai-api-key", { required: true }),
-      getInput("model"),
-      getInput("prompt-path"),
+      getInput("model") || "gpt-5.5",
+      getInput("prompt-path") || ".github/prompts",
       getInput("github-bot-login")
     );
   }
@@ -24281,9 +24284,80 @@ var ReviewService = class {
       prompts
     );
     const review = await this.openAi.review(prompt);
+    const allowedLinesByPath = new Map(
+      files.map((file2) => [file2.path, new Set(file2.rightLines)])
+    );
+    const validComments = [];
+    const unplaceableComments = [];
+    for (const comment of review.comments) {
+      const allowedLines = allowedLinesByPath.get(comment.path);
+      if (!allowedLines) {
+        warning(`Could not place AI review comment for unknown file: ${comment.path}`);
+        unplaceableComments.push(comment);
+        continue;
+      }
+      if (!allowedLines.has(comment.line)) {
+        warning(
+          `Could not place AI review comment for ${comment.path}:${comment.line} because the line is not present on the RIGHT side of the diff.`
+        );
+        unplaceableComments.push(comment);
+        continue;
+      }
+      validComments.push(comment);
+    }
+    review.comments = validComments;
+    if (unplaceableComments.length > 0) {
+      const unplaceableSummary = [
+        "",
+        "## Additional AI review comments",
+        "",
+        "The following comments could not be placed inline because their line numbers are not present on the RIGHT side of the pull request diff:",
+        "",
+        ...unplaceableComments.map((comment) => `- \`${comment.path}:${comment.line}\` \u2014 ${comment.comment}`)
+      ].join("\n");
+      review.summary = `${review.summary}
+${unplaceableSummary}`;
+    }
+    if (review.comments.length === 0 && review.decision === "REQUEST_CHANGES") {
+      review.decision = "COMMENT";
+    }
     await this.github.publishReview(review);
   }
 };
+
+// src/utils/parseGithubPatch.ts
+function extractRightSideLinesFromPatch(patch) {
+  const lines = patch.split("\n");
+  const result = /* @__PURE__ */ new Set();
+  let newLine = null;
+  for (const line of lines) {
+    const hunkMatch = line.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
+    if (hunkMatch) {
+      newLine = Number(hunkMatch[1]);
+      continue;
+    }
+    if (newLine === null) {
+      continue;
+    }
+    if (line.startsWith("+") && !line.startsWith("+++")) {
+      result.add(newLine);
+      newLine++;
+      continue;
+    }
+    if (line.startsWith("-") && !line.startsWith("---")) {
+      continue;
+    }
+    if (line.startsWith(" ")) {
+      result.add(newLine);
+      newLine++;
+      continue;
+    }
+    if (line === "\\ No newline at end of file") {
+      continue;
+    }
+  }
+  return [...result].sort((a, b) => a - b);
+}
 
 // src/github/GithubClient.ts
 var GithubClient = class {
@@ -24334,7 +24408,8 @@ var GithubClient = class {
     });
     return response.data.filter((file2) => file2.status !== "removed" && file2.patch).map((file2) => ({
       path: file2.filename,
-      patch: file2.patch
+      patch: file2.patch,
+      rightLines: extractRightSideLinesFromPatch(file2.patch)
     }));
   }
   async publishReview(review) {
@@ -24419,6 +24494,14 @@ var PromptBuilder = class {
       - Use APPROVE only when no issues requiring changes were found.
       - Use REQUEST_CHANGES when the pull request contains issues that should be fixed before merging.
       - Use COMMENT when only optional improvements or suggestions are found.
+      - For each comment, "path" MUST exactly match one of the changed file paths.
+      - For each comment, "line" MUST be a line number from the new version of the file.
+      - For each comment, "line" MUST be one of the allowed RIGHT-side line numbers listed for that file.
+      - Never use line numbers from the old version of the file.
+      - Never use line numbers from the markdown diff block itself.
+      - Never comment on removed lines.
+      - Never comment on a line if you are not sure which allowed RIGHT-side line number it belongs to.
+      - If you find an important issue but cannot confidently map it to an allowed RIGHT-side line number, describe it in the summary instead of adding it to comments.
     `);
     userPrompts.push("# Pull Request");
     userPrompts.push(`Title: ${context3.title}`);
@@ -24428,6 +24511,8 @@ var PromptBuilder = class {
     userPrompts.push("# Changed files");
     for (const file2 of files) {
       userPrompts.push(`## ${file2.path}`);
+      userPrompts.push("Allowed RIGHT-side line numbers for review comments:");
+      userPrompts.push(file2.rightLines.length > 0 ? file2.rightLines.join(", ") : "none");
       userPrompts.push("```diff");
       userPrompts.push(file2.patch);
       userPrompts.push("```");

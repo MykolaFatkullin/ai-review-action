@@ -4,6 +4,7 @@ import { getOctokit } from "@actions/github";
 import { ReviewContext } from "../types/ReviewContext.js";
 import { ChangedFile } from "../types/ChangedFile.js";
 import { ReviewResponse } from "../types/ReviewResponseSchema.js";
+import { extractRightSideLinesFromPatch } from "../utils/parseGithubPatch.js";
 
 export class GithubClient {
   private readonly context: GithubContext;
@@ -70,6 +71,7 @@ export class GithubClient {
       .map(file => ({
         path: file.filename,
         patch: file.patch!,
+        rightLines: extractRightSideLinesFromPatch(file.patch!)
       }));
   }
 

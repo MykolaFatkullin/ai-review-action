@@ -25,8 +25,8 @@ export class Config {
     return new Config(
       core.getInput("github-token", {required: true}),
       core.getInput("openai-api-key", {required: true}),
-      core.getInput("model"),
-      core.getInput("prompt-path"),
+      core.getInput("model") || "gpt-5.5",
+      core.getInput("prompt-path") || ".github/prompts",
       core.getInput("github-bot-login"),
     );
   }
