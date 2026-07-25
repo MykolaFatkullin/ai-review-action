@@ -5,9 +5,11 @@ export default defineConfig({
   format: ["esm"],
   target: "node22",
   platform: "node",
+  bundle: true,
   clean: true,
   sourcemap: true,
   dts: true,
   minify: false,
   splitting: false,
+  noExternal: [/.*/],
 });
