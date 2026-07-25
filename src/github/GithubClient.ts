@@ -8,9 +8,11 @@ import { ReviewResponse } from "../types/ReviewResponseSchema.js";
 export class GithubClient {
   private readonly context: GithubContext;
   private readonly octokit: ReturnType<typeof getOctokit>;
+  private readonly config: Config;
 
   constructor(config: Config, context: GithubContext) {
     this.context = context;
+    this.config = config;
     this.octokit = getOctokit(config.githubToken);
   }
 
@@ -22,6 +24,29 @@ export class GithubClient {
     });
 
     return response.data;
+  }
+
+  async getPullRequestReviews() {
+    return await this.octokit.rest.pulls.listReviews({
+      owner: this.context.owner,
+      repo: this.context.repo,
+      pull_number: this.context.pullRequestNumber,
+    });
+  }
+
+  async isReviewRequired(): Promise<boolean> {
+    const pullRequest = await this.getPullRequest();
+    const reviews = await this.getPullRequestReviews();
+
+    const lastBotReview = reviews.data
+      .filter(review => review.user?.login === this.config.githubBotLogin)
+      .at(-1);
+
+    if (!lastBotReview) {
+      return true;
+    }
+
+    return lastBotReview.commit_id !== pullRequest.head.sha;
   }
 
   async getReviewContext(): Promise<ReviewContext> {
@@ -56,7 +81,7 @@ export class GithubClient {
       repo: this.context.repo,
       pull_number: this.context.pullRequestNumber,
       commit_id: pullRequest.head.sha,
-      event: "COMMENT",
+      event: review.decision,
       body: review.summary,
       comments: review.comments.map(comment => ({
         path: comment.path,
@@ -65,14 +90,5 @@ export class GithubClient {
         body: comment.comment,
       })),
     });
-  }
-
-  createComment() {
-  }
-
-  updateComment() {
-  }
-
-  findReviewComment() {
   }
 }

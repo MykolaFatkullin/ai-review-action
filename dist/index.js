@@ -166,18 +166,18 @@ var require_tunnel = __commonJS({
             res.statusCode
           );
           socket.destroy();
-          var error51 = new Error("tunneling socket could not be established, statusCode=" + res.statusCode);
-          error51.code = "ECONNRESET";
-          options.request.emit("error", error51);
+          var error52 = new Error("tunneling socket could not be established, statusCode=" + res.statusCode);
+          error52.code = "ECONNRESET";
+          options.request.emit("error", error52);
           self.removeSocket(placeholder);
           return;
         }
         if (head.length > 0) {
           debug2("got illegal response body from proxy");
           socket.destroy();
-          var error51 = new Error("got illegal response body from proxy");
-          error51.code = "ECONNRESET";
-          options.request.emit("error", error51);
+          var error52 = new Error("got illegal response body from proxy");
+          error52.code = "ECONNRESET";
+          options.request.emit("error", error52);
           self.removeSocket(placeholder);
           return;
         }
@@ -192,9 +192,9 @@ var require_tunnel = __commonJS({
           cause.message,
           cause.stack
         );
-        var error51 = new Error("tunneling socket could not be established, cause=" + cause.message);
-        error51.code = "ECONNRESET";
-        options.request.emit("error", error51);
+        var error52 = new Error("tunneling socket could not be established, cause=" + cause.message);
+        error52.code = "ECONNRESET";
+        options.request.emit("error", error52);
         self.removeSocket(placeholder);
       }
     };
@@ -1525,14 +1525,14 @@ var require_diagnostics = __commonJS({
       diagnosticsChannel.channel("undici:client:connectError").subscribe((evt) => {
         const {
           connectParams: { version: version2, protocol, port, host },
-          error: error51
+          error: error52
         } = evt;
         debuglog(
           "connection to %s using %s%s errored - %s",
           `${host}${port ? `:${port}` : ""}`,
           protocol,
           version2,
-          error51.message
+          error52.message
         );
       });
       diagnosticsChannel.channel("undici:client:sendHeaders").subscribe((evt) => {
@@ -1563,14 +1563,14 @@ var require_diagnostics = __commonJS({
       diagnosticsChannel.channel("undici:request:error").subscribe((evt) => {
         const {
           request: { method, path: path2, origin },
-          error: error51
+          error: error52
         } = evt;
         debuglog(
           "request to %s %s/%s errored - %s",
           method,
           origin,
           path2,
-          error51.message
+          error52.message
         );
       });
       isClientSet = true;
@@ -1605,7 +1605,7 @@ var require_diagnostics = __commonJS({
         diagnosticsChannel.channel("undici:client:connectError").subscribe((evt) => {
           const {
             connectParams: { version: version2, protocol, port, host },
-            error: error51
+            error: error52
           } = evt;
           debuglog(
             "connection to %s%s using %s%s errored - %s",
@@ -1613,7 +1613,7 @@ var require_diagnostics = __commonJS({
             port ? `:${port}` : "",
             protocol,
             version2,
-            error51.message
+            error52.message
           );
         });
         diagnosticsChannel.channel("undici:client:sendHeaders").subscribe((evt) => {
@@ -1883,16 +1883,16 @@ var require_request = __commonJS({
           this.onError(err);
         }
       }
-      onError(error51) {
+      onError(error52) {
         this.onFinally();
         if (channels.error.hasSubscribers) {
-          channels.error.publish({ request: this, error: error51 });
+          channels.error.publish({ request: this, error: error52 });
         }
         if (this.aborted) {
           return;
         }
         this.aborted = true;
-        return this[kHandler].onError(error51);
+        return this[kHandler].onError(error52);
       }
       onFinally() {
         if (this.errorHandler) {
@@ -5630,7 +5630,7 @@ Content-Type: ${value.type || "application/octet-stream"}\r
       }
       throwIfAborted(object2[kState]);
       const promise2 = createDeferredPromise();
-      const errorSteps = (error51) => promise2.reject(error51);
+      const errorSteps = (error52) => promise2.reject(error52);
       const successSteps = (data) => {
         try {
           promise2.resolve(convertBytesToJSValue(data));
@@ -7243,8 +7243,8 @@ var require_client_h2 = __commonJS({
         }
         request2.onRequestSent();
         client[kResume]();
-      } catch (error51) {
-        abort(error51);
+      } catch (error52) {
+        abort(error52);
       }
     }
     function writeStream(abort, socket, expectsPayload, h2stream, body, client, request2, contentLength) {
@@ -7399,8 +7399,8 @@ var require_redirect_handler = __commonJS({
       onUpgrade(statusCode, headers, socket) {
         this.handler.onUpgrade(statusCode, headers, socket);
       }
-      onError(error51) {
-        this.handler.onError(error51);
+      onError(error52) {
+        this.handler.onError(error52);
       }
       onHeaders(statusCode, headers, resume, statusText) {
         this.location = this.history.length >= this.maxRedirections || util2.isDisturbed(this.opts.body) ? null : parseLocation(statusCode, headers);
@@ -8330,7 +8330,7 @@ var require_pool = __commonJS({
         this[kOptions] = { ...util2.deepClone(options), connect, allowH2 };
         this[kOptions].interceptors = options.interceptors ? { ...options.interceptors } : void 0;
         this[kFactory] = factory;
-        this.on("connectionError", (origin2, targets, error51) => {
+        this.on("connectionError", (origin2, targets, error52) => {
           for (const target of targets) {
             const idx = this[kClients].indexOf(target);
             if (idx !== -1) {
@@ -10727,13 +10727,13 @@ var require_mock_utils = __commonJS({
       if (mockDispatch2.data.callback) {
         mockDispatch2.data = { ...mockDispatch2.data, ...mockDispatch2.data.callback(opts) };
       }
-      const { data: { statusCode, data, headers, trailers, error: error51 }, delay, persist } = mockDispatch2;
+      const { data: { statusCode, data, headers, trailers, error: error52 }, delay, persist } = mockDispatch2;
       const { timesInvoked, times } = mockDispatch2;
       mockDispatch2.consumed = !persist && timesInvoked >= times;
       mockDispatch2.pending = timesInvoked < times;
-      if (error51 !== null) {
+      if (error52 !== null) {
         deleteMockDispatch(this[kDispatches], key);
-        handler2.onError(error51);
+        handler2.onError(error52);
         return true;
       }
       if (typeof delay === "number" && delay > 0) {
@@ -10771,19 +10771,19 @@ var require_mock_utils = __commonJS({
         if (agent.isMockActive) {
           try {
             mockDispatch.call(this, opts, handler2);
-          } catch (error51) {
-            if (error51 instanceof MockNotMatchedError) {
+          } catch (error52) {
+            if (error52 instanceof MockNotMatchedError) {
               const netConnect = agent[kGetNetConnect]();
               if (netConnect === false) {
-                throw new MockNotMatchedError(`${error51.message}: subsequent request to origin ${origin} was not allowed (net.connect disabled)`);
+                throw new MockNotMatchedError(`${error52.message}: subsequent request to origin ${origin} was not allowed (net.connect disabled)`);
               }
               if (checkNetConnect(netConnect, origin)) {
                 originalDispatch.call(this, opts, handler2);
               } else {
-                throw new MockNotMatchedError(`${error51.message}: subsequent request to origin ${origin} was not allowed (net.connect is not enabled for this origin)`);
+                throw new MockNotMatchedError(`${error52.message}: subsequent request to origin ${origin} was not allowed (net.connect is not enabled for this origin)`);
               }
             } else {
-              throw error51;
+              throw error52;
             }
           }
         } else {
@@ -10948,11 +10948,11 @@ var require_mock_interceptor = __commonJS({
       /**
        * Mock an undici request with a defined error.
        */
-      replyWithError(error51) {
-        if (typeof error51 === "undefined") {
+      replyWithError(error52) {
+        if (typeof error52 === "undefined") {
           throw new InvalidArgumentError("error must be defined");
         }
-        const newMockDispatch = addMockDispatch(this[kDispatches], this[kDispatchKey], { error: error51 });
+        const newMockDispatch = addMockDispatch(this[kDispatches], this[kDispatchKey], { error: error52 });
         return new MockScope(newMockDispatch);
       }
       /**
@@ -13470,17 +13470,17 @@ var require_fetch = __commonJS({
         this.emit("terminated", reason);
       }
       // https://fetch.spec.whatwg.org/#fetch-controller-abort
-      abort(error51) {
+      abort(error52) {
         if (this.state !== "ongoing") {
           return;
         }
         this.state = "aborted";
-        if (!error51) {
-          error51 = new DOMException("The operation was aborted.", "AbortError");
+        if (!error52) {
+          error52 = new DOMException("The operation was aborted.", "AbortError");
         }
-        this.serializedAbortReason = error51;
-        this.connection?.destroy(error51);
-        this.emit("terminated", error51);
+        this.serializedAbortReason = error52;
+        this.connection?.destroy(error52);
+        this.emit("terminated", error52);
       }
     };
     function handleFetchDone(response) {
@@ -13576,12 +13576,12 @@ var require_fetch = __commonJS({
       );
     }
     var markResourceTiming = performance.markResourceTiming;
-    function abortFetch(p, request2, responseObject, error51) {
+    function abortFetch(p, request2, responseObject, error52) {
       if (p) {
-        p.reject(error51);
+        p.reject(error52);
       }
       if (request2.body != null && isReadable(request2.body?.stream)) {
-        request2.body.stream.cancel(error51).catch((err) => {
+        request2.body.stream.cancel(error52).catch((err) => {
           if (err.code === "ERR_INVALID_STATE") {
             return;
           }
@@ -13593,7 +13593,7 @@ var require_fetch = __commonJS({
       }
       const response = responseObject[kState];
       if (response.body != null && isReadable(response.body?.stream)) {
-        response.body.stream.cancel(error51).catch((err) => {
+        response.body.stream.cancel(error52).catch((err) => {
           if (err.code === "ERR_INVALID_STATE") {
             return;
           }
@@ -14414,13 +14414,13 @@ var require_fetch = __commonJS({
               fetchParams.controller.ended = true;
               this.body.push(null);
             },
-            onError(error51) {
+            onError(error52) {
               if (this.abort) {
                 fetchParams.controller.off("terminated", this.abort);
               }
-              this.body?.destroy(error51);
-              fetchParams.controller.terminate(error51);
-              reject(error51);
+              this.body?.destroy(error52);
+              fetchParams.controller.terminate(error52);
+              reject(error52);
             },
             onUpgrade(status, rawHeaders, socket) {
               if (status !== 101) {
@@ -14883,8 +14883,8 @@ var require_util4 = __commonJS({
                   }
                   fr[kResult] = result;
                   fireAProgressEvent("load", fr);
-                } catch (error51) {
-                  fr[kError] = error51;
+                } catch (error52) {
+                  fr[kError] = error52;
                   fireAProgressEvent("error", fr);
                 }
                 if (fr[kState] !== "loading") {
@@ -14893,13 +14893,13 @@ var require_util4 = __commonJS({
               });
               break;
             }
-          } catch (error51) {
+          } catch (error52) {
             if (fr[kAborted]) {
               return;
             }
             queueMicrotask(() => {
               fr[kState] = "done";
-              fr[kError] = error51;
+              fr[kError] = error52;
               fireAProgressEvent("error", fr);
               if (fr[kState] !== "loading") {
                 fireAProgressEvent("loadend", fr);
@@ -17205,11 +17205,11 @@ var require_connection = __commonJS({
         });
       }
     }
-    function onSocketError(error51) {
+    function onSocketError(error52) {
       const { ws } = this;
       ws[kReadyState] = states.CLOSING;
       if (channels.socketError.hasSubscribers) {
-        channels.socketError.publish(error51);
+        channels.socketError.publish(error52);
       }
       this.destroy();
     }
@@ -17500,10 +17500,10 @@ var require_receiver = __commonJS({
                 this.#extensions.get("permessage-deflate").decompress(
                   body,
                   this.#info.fin,
-                  (error51, data) => {
-                    if (error51) {
-                      const code = error51 instanceof MessageSizeExceededError ? 1009 : 1007;
-                      failWebsocketConnectionWithCode(this.ws, code, error51.message);
+                  (error52, data) => {
+                    if (error52) {
+                      const code = error52 instanceof MessageSizeExceededError ? 1009 : 1007;
+                      failWebsocketConnectionWithCode(this.ws, code, error52.message);
                       return;
                     }
                     if (!this.writeFragments(data)) {
@@ -18567,8 +18567,8 @@ var require_eventsource = __commonJS({
           pipeline(
             response.body.stream,
             eventSourceStream,
-            (error51) => {
-              if (error51?.aborted === false) {
+            (error52) => {
+              if (error52?.aborted === false) {
                 this.close();
                 this.dispatchEvent(new Event("error"));
               }
@@ -19229,12 +19229,12 @@ var require_lib = __commonJS({
             throw new Error("Client has already been disposed.");
           }
           const parsedUrl = new URL(requestUrl);
-          let info = this._prepareRequest(verb, parsedUrl, headers);
+          let info2 = this._prepareRequest(verb, parsedUrl, headers);
           const maxTries = this._allowRetries && RetryableHttpVerbs.includes(verb) ? this._maxRetries + 1 : 1;
           let numTries = 0;
           let response;
           do {
-            response = yield this.requestRaw(info, data);
+            response = yield this.requestRaw(info2, data);
             if (response && response.message && response.message.statusCode === HttpCodes2.Unauthorized) {
               let authenticationHandler;
               for (const handler2 of this.handlers) {
@@ -19244,7 +19244,7 @@ var require_lib = __commonJS({
                 }
               }
               if (authenticationHandler) {
-                return authenticationHandler.handleAuthentication(this, info, data);
+                return authenticationHandler.handleAuthentication(this, info2, data);
               } else {
                 return response;
               }
@@ -19267,8 +19267,8 @@ var require_lib = __commonJS({
                   }
                 }
               }
-              info = this._prepareRequest(verb, parsedRedirectUrl, headers);
-              response = yield this.requestRaw(info, data);
+              info2 = this._prepareRequest(verb, parsedRedirectUrl, headers);
+              response = yield this.requestRaw(info2, data);
               redirectsRemaining--;
             }
             if (!response.message.statusCode || !HttpResponseRetryCodes2.includes(response.message.statusCode)) {
@@ -19297,7 +19297,7 @@ var require_lib = __commonJS({
        * @param info
        * @param data
        */
-      requestRaw(info, data) {
+      requestRaw(info2, data) {
         return __awaiter3(this, void 0, void 0, function* () {
           return new Promise((resolve, reject) => {
             function callbackForResult(err, res) {
@@ -19309,7 +19309,7 @@ var require_lib = __commonJS({
                 resolve(res);
               }
             }
-            this.requestRawWithCallback(info, data, callbackForResult);
+            this.requestRawWithCallback(info2, data, callbackForResult);
           });
         });
       }
@@ -19319,12 +19319,12 @@ var require_lib = __commonJS({
        * @param data
        * @param onResult
        */
-      requestRawWithCallback(info, data, onResult) {
+      requestRawWithCallback(info2, data, onResult) {
         if (typeof data === "string") {
-          if (!info.options.headers) {
-            info.options.headers = {};
+          if (!info2.options.headers) {
+            info2.options.headers = {};
           }
-          info.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
+          info2.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
         }
         let callbackCalled = false;
         function handleResult2(err, res) {
@@ -19333,7 +19333,7 @@ var require_lib = __commonJS({
             onResult(err, res);
           }
         }
-        const req = info.httpModule.request(info.options, (msg) => {
+        const req = info2.httpModule.request(info2.options, (msg) => {
           const res = new HttpClientResponse(msg);
           handleResult2(void 0, res);
         });
@@ -19345,7 +19345,7 @@ var require_lib = __commonJS({
           if (socket) {
             socket.end();
           }
-          handleResult2(new Error(`Request timeout: ${info.options.path}`));
+          handleResult2(new Error(`Request timeout: ${info2.options.path}`));
         });
         req.on("error", function(err) {
           handleResult2(err);
@@ -19381,27 +19381,27 @@ var require_lib = __commonJS({
         return this._getProxyAgentDispatcher(parsedUrl, proxyUrl);
       }
       _prepareRequest(method, requestUrl, headers) {
-        const info = {};
-        info.parsedUrl = requestUrl;
-        const usingSsl = info.parsedUrl.protocol === "https:";
-        info.httpModule = usingSsl ? https : http;
+        const info2 = {};
+        info2.parsedUrl = requestUrl;
+        const usingSsl = info2.parsedUrl.protocol === "https:";
+        info2.httpModule = usingSsl ? https : http;
         const defaultPort = usingSsl ? 443 : 80;
-        info.options = {};
-        info.options.host = info.parsedUrl.hostname;
-        info.options.port = info.parsedUrl.port ? parseInt(info.parsedUrl.port) : defaultPort;
-        info.options.path = (info.parsedUrl.pathname || "") + (info.parsedUrl.search || "");
-        info.options.method = method;
-        info.options.headers = this._mergeHeaders(headers);
+        info2.options = {};
+        info2.options.host = info2.parsedUrl.hostname;
+        info2.options.port = info2.parsedUrl.port ? parseInt(info2.parsedUrl.port) : defaultPort;
+        info2.options.path = (info2.parsedUrl.pathname || "") + (info2.parsedUrl.search || "");
+        info2.options.method = method;
+        info2.options.headers = this._mergeHeaders(headers);
         if (this.userAgent != null) {
-          info.options.headers["user-agent"] = this.userAgent;
+          info2.options.headers["user-agent"] = this.userAgent;
         }
-        info.options.agent = this._getAgent(info.parsedUrl);
+        info2.options.agent = this._getAgent(info2.parsedUrl);
         if (this.handlers) {
           for (const handler2 of this.handlers) {
-            handler2.prepareRequest(info.options);
+            handler2.prepareRequest(info2.options);
           }
         }
-        return info;
+        return info2;
       }
       _mergeHeaders(headers) {
         if (this.requestOptions && this.requestOptions.headers) {
@@ -19744,6 +19744,80 @@ var require_dist = __commonJS({
   }
 });
 
+// node_modules/@actions/core/lib/command.js
+import * as os from "os";
+
+// node_modules/@actions/core/lib/utils.js
+function toCommandValue(input) {
+  if (input === null || input === void 0) {
+    return "";
+  } else if (typeof input === "string" || input instanceof String) {
+    return input;
+  }
+  return JSON.stringify(input);
+}
+function toCommandProperties(annotationProperties) {
+  if (!Object.keys(annotationProperties).length) {
+    return {};
+  }
+  return {
+    title: annotationProperties.title,
+    file: annotationProperties.file,
+    line: annotationProperties.startLine,
+    endLine: annotationProperties.endLine,
+    col: annotationProperties.startColumn,
+    endColumn: annotationProperties.endColumn
+  };
+}
+
+// node_modules/@actions/core/lib/command.js
+function issueCommand(command, properties, message) {
+  const cmd = new Command(command, properties, message);
+  process.stdout.write(cmd.toString() + os.EOL);
+}
+var CMD_STRING = "::";
+var Command = class {
+  constructor(command, properties, message) {
+    if (!command) {
+      command = "missing.command";
+    }
+    this.command = command;
+    this.properties = properties;
+    this.message = message;
+  }
+  toString() {
+    let cmdStr = CMD_STRING + this.command;
+    if (this.properties && Object.keys(this.properties).length > 0) {
+      cmdStr += " ";
+      let first = true;
+      for (const key in this.properties) {
+        if (this.properties.hasOwnProperty(key)) {
+          const val = this.properties[key];
+          if (val) {
+            if (first) {
+              first = false;
+            } else {
+              cmdStr += ",";
+            }
+            cmdStr += `${key}=${escapeProperty(val)}`;
+          }
+        }
+      }
+    }
+    cmdStr += `${CMD_STRING}${escapeData(this.message)}`;
+    return cmdStr;
+  }
+};
+function escapeData(s) {
+  return toCommandValue(s).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+}
+function escapeProperty(s) {
+  return toCommandValue(s).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/:/g, "%3A").replace(/,/g, "%2C");
+}
+
+// node_modules/@actions/core/lib/core.js
+import * as os3 from "os";
+
 // node_modules/@actions/http-client/lib/index.js
 var tunnel = __toESM(require_tunnel2(), 1);
 var import_undici = __toESM(require_undici(), 1);
@@ -19800,7 +19874,7 @@ var HttpResponseRetryCodes = [
 ];
 
 // node_modules/@actions/core/lib/summary.js
-import { EOL } from "os";
+import { EOL as EOL2 } from "os";
 import { constants, promises } from "fs";
 var __awaiter = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
@@ -19944,7 +20018,7 @@ var Summary = class {
    * @returns {Summary} summary instance
    */
   addEOL() {
-    return this.addRaw(EOL);
+    return this.addRaw(EOL2);
   }
   /**
    * Adds an HTML codeblock to the summary buffer
@@ -20084,7 +20158,7 @@ var Summary = class {
 var _summary = new Summary();
 
 // node_modules/@actions/core/lib/platform.js
-import os from "os";
+import os2 from "os";
 
 // node_modules/@actions/io/lib/io-util.js
 import * as fs from "fs";
@@ -20096,8 +20170,8 @@ var READONLY = fs.constants.O_RDONLY;
 var IS_WINDOWS2 = process.platform === "win32";
 
 // node_modules/@actions/core/lib/platform.js
-var platform = os.platform();
-var arch = os.arch();
+var platform = os2.platform();
+var arch = os2.arch();
 
 // node_modules/@actions/core/lib/core.js
 var ExitCode;
@@ -20115,6 +20189,16 @@ function getInput(name, options) {
   }
   return val.trim();
 }
+function setFailed(message) {
+  process.exitCode = ExitCode.Failure;
+  error(message);
+}
+function error(message, properties = {}) {
+  issueCommand("error", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
+function info(message) {
+  process.stdout.write(message + os3.EOL);
+}
 
 // src/config/Config.ts
 var Config = class _Config {
@@ -20122,25 +20206,28 @@ var Config = class _Config {
   openAiApiKey;
   model;
   promptPath;
-  constructor(githubToken, openAiApiKey, model, promptPath) {
+  githubBotLogin;
+  constructor(githubToken, openAiApiKey, model, promptPath, githubBotLogin) {
     this.githubToken = githubToken;
     this.openAiApiKey = openAiApiKey;
     this.model = model;
     this.promptPath = promptPath;
+    this.githubBotLogin = githubBotLogin;
   }
   static load() {
     return new _Config(
       getInput("github-token", { required: true }),
       getInput("openai-api-key", { required: true }),
       getInput("model"),
-      getInput("prompt-path")
+      getInput("prompt-path"),
+      getInput("github-bot-login")
     );
   }
 };
 
 // node_modules/@actions/github/lib/context.js
 import { readFileSync, existsSync } from "fs";
-import { EOL as EOL2 } from "os";
+import { EOL as EOL4 } from "os";
 var Context = class {
   /**
    * Hydrate the context from the environment
@@ -20153,7 +20240,7 @@ var Context = class {
         this.payload = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: "utf8" }));
       } else {
         const path2 = process.env.GITHUB_EVENT_PATH;
-        process.stdout.write(`GITHUB_EVENT_PATH ${path2} does not exist${EOL2}`);
+        process.stdout.write(`GITHUB_EVENT_PATH ${path2} does not exist${EOL4}`);
       }
     }
     this.eventName = process.env.GITHUB_EVENT_NAME;
@@ -20317,8 +20404,8 @@ function addHook(state, kind, name, hook2) {
   }
   if (kind === "error") {
     hook2 = (method, options) => {
-      return Promise.resolve().then(method.bind(null, options)).catch((error51) => {
-        return orig(error51, options);
+      return Promise.resolve().then(method.bind(null, options)).catch((error52) => {
+        return orig(error52, options);
       });
     };
   }
@@ -20895,8 +20982,8 @@ var JSONStringify = (value, replacer, space) => {
     );
     const denoisedJSON = processedJSON.replace(noiseStringify, "$1$2$3");
     return denoisedJSON;
-  } catch (error51) {
-    if (error51 instanceof RangeError) {
+  } catch (error52) {
+    if (error52 instanceof RangeError) {
       const convertedJSON = stringifyIteratively(value, replacer, space);
       if (convertedJSON === void 0) return void 0;
       const supportsRawJSON = "rawJSON" in JSON;
@@ -20904,7 +20991,7 @@ var JSONStringify = (value, replacer, space) => {
       const processedJSON = convertedJSON.replace(bigIntsStringify, "$1$2$3");
       return processedJSON.replace(noiseStringify, "$1$2$3");
     }
-    throw error51;
+    throw error52;
   }
 };
 var featureCache = /* @__PURE__ */ new Map();
@@ -21017,13 +21104,13 @@ var JSONParse = (text, reviver) => {
       serializedData,
       (key, value, context3) => convertMarkedBigIntsReviver(key, value, context3, reviver)
     );
-  } catch (error51) {
-    if (error51 instanceof RangeError) {
+  } catch (error52) {
+    if (error52 instanceof RangeError) {
       const serializedData = serializeBigInts(text);
       const parsed = originalParse(serializedData);
       return applyReviverIteratively(parsed, reviver);
     }
-    throw error51;
+    throw error52;
   }
 };
 
@@ -21110,26 +21197,26 @@ async function fetchWrapper(requestOptions) {
       // See https://fetch.spec.whatwg.org/#dom-requestinit-duplex.
       ...requestOptions.body && { duplex: "half" }
     });
-  } catch (error51) {
+  } catch (error52) {
     let message = "Unknown Error";
-    if (error51 instanceof Error) {
-      if (error51.name === "AbortError") {
-        error51.status = 500;
-        throw error51;
+    if (error52 instanceof Error) {
+      if (error52.name === "AbortError") {
+        error52.status = 500;
+        throw error52;
       }
-      message = error51.message;
-      if (error51.name === "TypeError" && "cause" in error51) {
-        if (error51.cause instanceof Error) {
-          message = error51.cause.message;
-        } else if (typeof error51.cause === "string") {
-          message = error51.cause;
+      message = error52.message;
+      if (error52.name === "TypeError" && "cause" in error52) {
+        if (error52.cause instanceof Error) {
+          message = error52.cause.message;
+        } else if (typeof error52.cause === "string") {
+          message = error52.cause;
         }
       }
     }
     const requestError = new RequestError(message, 500, {
       request: requestOptions
     });
-    requestError.cause = error51;
+    requestError.cause = error52;
     throw requestError;
   }
   const status = fetchResponse.status;
@@ -24028,8 +24115,8 @@ function iterator(octokit, route, parameters) {
             }
           }
           return { value: normalizedResponse };
-        } catch (error51) {
-          if (error51.status !== 409) throw error51;
+        } catch (error52) {
+          if (error52.status !== 409) throw error52;
           url2 = "";
           return {
             value: {
@@ -24126,19 +24213,41 @@ var GithubContext = class _GithubContext {
   owner;
   repo;
   pullRequestNumber;
-  static SUPPORTED_EVENTS = /* @__PURE__ */ new Set([
-    "pull_request",
-    "pull_request_target"
-  ]);
-  static load() {
-    const pullRequest = context2.payload.pull_request;
-    if (!_GithubContext.SUPPORTED_EVENTS.has(context2.eventName) || !pullRequest) {
-      throw new Error("This action supports only pull_request and pull_request_target events.");
+  static tryLoad() {
+    switch (context2.eventName) {
+      case "pull_request":
+      case "pull_request_target":
+        return this.fromPullRequest();
+      case "issue_comment":
+        return this.fromIssueComment();
+      default:
+        throw new Error(`Unsupported event: ${context2.eventName}`);
+    }
+  }
+  static fromPullRequest() {
+    const pr = context2.payload.pull_request;
+    if (!pr) {
+      throw new Error("Missing pull_request payload.");
     }
     return new _GithubContext(
       context2.repo.owner,
       context2.repo.repo,
-      pullRequest.number
+      pr.number
+    );
+  }
+  static fromIssueComment() {
+    const issue3 = context2.payload.issue;
+    if (!issue3?.pull_request) {
+      throw new Error("Comment is not on a pull request.");
+    }
+    const command = context2.payload.comment?.body.trim();
+    if (command !== "/ai-review") {
+      return null;
+    }
+    return new _GithubContext(
+      context2.repo.owner,
+      context2.repo.repo,
+      issue3.number
     );
   }
 };
@@ -24176,9 +24285,11 @@ var ReviewService = class {
 var GithubClient = class {
   context;
   octokit;
-  constructor(config3, context3) {
+  config;
+  constructor(config2, context3) {
     this.context = context3;
-    this.octokit = getOctokit(config3.githubToken);
+    this.config = config2;
+    this.octokit = getOctokit(config2.githubToken);
   }
   async getPullRequest() {
     const response = await this.octokit.rest.pulls.get({
@@ -24187,6 +24298,22 @@ var GithubClient = class {
       pull_number: this.context.pullRequestNumber
     });
     return response.data;
+  }
+  async getPullRequestReviews() {
+    return await this.octokit.rest.pulls.listReviews({
+      owner: this.context.owner,
+      repo: this.context.repo,
+      pull_number: this.context.pullRequestNumber
+    });
+  }
+  async isReviewRequired() {
+    const pullRequest = await this.getPullRequest();
+    const reviews = await this.getPullRequestReviews();
+    const lastBotReview = reviews.data.filter((review) => review.user?.login === this.config.githubBotLogin).at(-1);
+    if (!lastBotReview) {
+      return true;
+    }
+    return lastBotReview.commit_id !== pullRequest.head.sha;
   }
   async getReviewContext() {
     const pr = await this.getPullRequest();
@@ -24213,7 +24340,7 @@ var GithubClient = class {
       repo: this.context.repo,
       pull_number: this.context.pullRequestNumber,
       commit_id: pullRequest.head.sha,
-      event: "COMMENT",
+      event: review.decision,
       body: review.summary,
       comments: review.comments.map((comment) => ({
         path: comment.path,
@@ -24222,12 +24349,6 @@ var GithubClient = class {
         body: comment.comment
       }))
     });
-  }
-  createComment() {
-  }
-  updateComment() {
-  }
-  findReviewComment() {
   }
 };
 
@@ -24243,11 +24364,11 @@ var PromptLoader = class {
     let files;
     try {
       files = await readdir2(this.promptPath);
-    } catch (error51) {
-      if (error51.code === "ENOENT") {
+    } catch (error52) {
+      if (error52.code === "ENOENT") {
         return /* @__PURE__ */ new Map();
       }
-      throw error51;
+      throw error52;
     }
     const markdownFiles = files.filter((file2) => extname(file2) === ".md").sort();
     const prompts = /* @__PURE__ */ new Map();
@@ -24272,8 +24393,10 @@ var PromptBuilder = class {
       }
     }
     systemPrompts.push(`
-      Return ONLY JSON in this format:
+      Return ONLY valid JSON.
+      
       {
+        "decision": "APPROVE" | "REQUEST_CHANGES" | "COMMENT",
         "summary": "...",
         "comments": [
           {
@@ -24283,6 +24406,15 @@ var PromptBuilder = class {
           }
         ]
       }
+      
+      Rules:
+      - Return ONLY JSON.
+      - Do not wrap JSON in markdown.
+      - Do not add explanations before or after JSON.
+      - If there are no review comments, return an empty comments array.
+      - Use APPROVE only when no issues requiring changes were found.
+      - Use REQUEST_CHANGES when the pull request contains issues that should be fixed before merging.
+      - Use COMMENT when only optional improvements or suggestions are found.
     `);
     userPrompts.push("# Pull Request");
     userPrompts.push(`Title: ${context3.title}`);
@@ -24345,14 +24477,14 @@ var castToError = (err) => {
   if (typeof err === "object" && err !== null) {
     try {
       if (Object.prototype.toString.call(err) === "[object Error]") {
-        const error51 = new Error(err.message, err.cause ? { cause: err.cause } : {});
+        const error52 = new Error(err.message, err.cause ? { cause: err.cause } : {});
         if (err.stack)
-          error51.stack = err.stack;
-        if (err.cause && !error51.cause)
-          error51.cause = err.cause;
+          error52.stack = err.stack;
+        if (err.cause && !error52.cause)
+          error52.cause = err.cause;
         if (err.name)
-          error51.name = err.name;
-        return error51;
+          error52.name = err.name;
+        return error52;
       }
     } catch {
     }
@@ -24368,19 +24500,19 @@ var castToError = (err) => {
 var OpenAIError = class extends Error {
 };
 var APIError = class _APIError extends OpenAIError {
-  constructor(status, error51, message, headers) {
-    super(`${_APIError.makeMessage(status, error51, message)}`);
+  constructor(status, error52, message, headers) {
+    super(`${_APIError.makeMessage(status, error52, message)}`);
     this.status = status;
     this.headers = headers;
     this.requestID = headers?.get("x-request-id");
-    this.error = error51;
-    const data = error51;
+    this.error = error52;
+    const data = error52;
     this.code = data?.["code"];
     this.param = data?.["param"];
     this.type = data?.["type"];
   }
-  static makeMessage(status, error51, message) {
-    const msg = error51?.message ? typeof error51.message === "string" ? error51.message : JSON.stringify(error51.message) : error51 ? JSON.stringify(error51) : message;
+  static makeMessage(status, error52, message) {
+    const msg = error52?.message ? typeof error52.message === "string" ? error52.message : JSON.stringify(error52.message) : error52 ? JSON.stringify(error52) : message;
     if (status && msg) {
       return `${status} ${msg}`;
     }
@@ -24396,32 +24528,32 @@ var APIError = class _APIError extends OpenAIError {
     if (!status || !headers) {
       return new APIConnectionError({ message, cause: castToError(errorResponse) });
     }
-    const error51 = errorResponse?.["error"];
+    const error52 = errorResponse?.["error"];
     if (status === 400) {
-      return new BadRequestError(status, error51, message, headers);
+      return new BadRequestError(status, error52, message, headers);
     }
     if (status === 401) {
-      return new AuthenticationError(status, error51, message, headers);
+      return new AuthenticationError(status, error52, message, headers);
     }
     if (status === 403) {
-      return new PermissionDeniedError(status, error51, message, headers);
+      return new PermissionDeniedError(status, error52, message, headers);
     }
     if (status === 404) {
-      return new NotFoundError(status, error51, message, headers);
+      return new NotFoundError(status, error52, message, headers);
     }
     if (status === 409) {
-      return new ConflictError(status, error51, message, headers);
+      return new ConflictError(status, error52, message, headers);
     }
     if (status === 422) {
-      return new UnprocessableEntityError(status, error51, message, headers);
+      return new UnprocessableEntityError(status, error52, message, headers);
     }
     if (status === 429) {
-      return new RateLimitError(status, error51, message, headers);
+      return new RateLimitError(status, error52, message, headers);
     }
     if (status >= 500) {
-      return new InternalServerError(status, error51, message, headers);
+      return new InternalServerError(status, error52, message, headers);
     }
-    return new _APIError(status, error51, message, headers);
+    return new _APIError(status, error52, message, headers);
   }
 };
 var APIUserAbortError = class extends APIError {
@@ -24473,11 +24605,11 @@ var InvalidWebhookSignatureError = class extends Error {
   }
 };
 var OAuthError = class extends APIError {
-  constructor(status, error51, headers) {
+  constructor(status, error52, headers) {
     let finalMessage = "OAuth2 authentication error";
     let error_code = void 0;
-    if (error51 && typeof error51 === "object") {
-      const errorData = error51;
+    if (error52 && typeof error52 === "object") {
+      const errorData = error52;
       error_code = errorData["error"];
       const description = errorData["error_description"];
       if (description && typeof description === "string") {
@@ -24486,7 +24618,7 @@ var OAuthError = class extends APIError {
         finalMessage = error_code;
       }
     }
-    super(status, error51, finalMessage, headers);
+    super(status, error52, finalMessage, headers);
     this.error_code = error_code;
   }
 };
@@ -25880,11 +26012,11 @@ var SUBJECT_TOKEN_TYPES = {
 };
 var TOKEN_EXCHANGE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
 var WorkloadIdentityAuth = class {
-  constructor(config3, fetch3) {
+  constructor(config2, fetch3) {
     this.cachedToken = null;
     this.refreshPromise = null;
     this.tokenExchangeUrl = "https://auth.openai.com/oauth/token";
-    this.config = config3;
+    this.config = config2;
     this.fetch = fetch3 ?? getDefaultFetch();
   }
   async getToken() {
@@ -26583,8 +26715,8 @@ var EventStream = class {
       Promise.resolve().then(executor).then(() => {
         try {
           this._emitFinal();
-        } catch (error51) {
-          __classPrivateFieldGet(this, _EventStream_instances, "m", _EventStream_handleError).call(this, error51);
+        } catch (error52) {
+          __classPrivateFieldGet(this, _EventStream_instances, "m", _EventStream_handleError).call(this, error52);
           return;
         }
         this._emit("end");
@@ -26725,8 +26857,8 @@ var EventStream = class {
         pushQueue.push(args);
       }
     };
-    const onFailure = (error51) => {
-      failure = error51;
+    const onFailure = (error52) => {
+      failure = error52;
       if (!pushQueue.length)
         rejectReader();
     };
@@ -26792,22 +26924,22 @@ var EventStream = class {
       listeners.forEach(({ listener }) => listener(...args));
     }
     if (event === "abort") {
-      const error51 = args[0];
+      const error52 = args[0];
       if (!__classPrivateFieldGet(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
-        Promise.reject(error51);
+        Promise.reject(error52);
       }
-      __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error51);
-      __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error51);
+      __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error52);
+      __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error52);
       this._emit("end");
       return;
     }
     if (event === "error") {
-      const error51 = args[0];
+      const error52 = args[0];
       if (!__classPrivateFieldGet(this, _EventStream_catchingPromiseCreated, "f") && !listeners?.length) {
-        Promise.reject(error51);
+        Promise.reject(error52);
       }
-      __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error51);
-      __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error51);
+      __classPrivateFieldGet(this, _EventStream_rejectConnectedPromise, "f").call(this, error52);
+      __classPrivateFieldGet(this, _EventStream_rejectEndPromise, "f").call(this, error52);
       this._emit("end");
     }
   }
@@ -26818,24 +26950,24 @@ _EventStream_connectedPromise = /* @__PURE__ */ new WeakMap(), _EventStream_reso
   for (const { signal, listener } of __classPrivateFieldGet(this, _EventStream_abortListeners, "f").splice(0)) {
     signal.removeEventListener("abort", listener);
   }
-}, _EventStream_handleError = function _EventStream_handleError2(error51) {
+}, _EventStream_handleError = function _EventStream_handleError2(error52) {
   __classPrivateFieldSet(this, _EventStream_errored, true, "f");
-  if (error51 instanceof Error && error51.name === "AbortError") {
-    error51 = new APIUserAbortError();
+  if (error52 instanceof Error && error52.name === "AbortError") {
+    error52 = new APIUserAbortError();
   }
-  if (error51 instanceof APIUserAbortError) {
+  if (error52 instanceof APIUserAbortError) {
     __classPrivateFieldSet(this, _EventStream_aborted, true, "f");
-    return this._emit("abort", error51);
+    return this._emit("abort", error52);
   }
-  if (error51 instanceof OpenAIError) {
-    return this._emit("error", error51);
+  if (error52 instanceof OpenAIError) {
+    return this._emit("error", error52);
   }
-  if (error51 instanceof Error) {
-    const openAIError = new OpenAIError(error51.message);
-    openAIError.cause = error51;
+  if (error52 instanceof Error) {
+    const openAIError = new OpenAIError(error52.message);
+    openAIError.cause = error52;
     return this._emit("error", openAIError);
   }
-  return this._emit("error", new OpenAIError(String(error51)));
+  return this._emit("error", new OpenAIError(String(error52)));
 };
 
 // node_modules/openai/lib/RunnableFunction.mjs
@@ -27074,8 +27206,8 @@ var AbstractChatCompletionRunner = class extends EventStream {
         let parsed;
         try {
           parsed = await fn.parse(args);
-        } catch (error51) {
-          const content2 = error51 instanceof Error ? error51.message : String(error51);
+        } catch (error52) {
+          const content2 = error52 instanceof Error ? error52.message : String(error52);
           return { message: { role, tool_call_id, content: content2 }, functionCalled: false };
         }
         rawContent = await fn.function(parsed, runner, toolContext);
@@ -34813,8 +34945,8 @@ var OpenAI = class {
   defaultIdempotencyKey() {
     return `stainless-node-retry-${uuid4()}`;
   }
-  makeStatusError(status, error51, message, headers) {
-    return APIError.generate(status, error51, message, headers);
+  makeStatusError(status, error52, message, headers) {
+    return APIError.generate(status, error52, message, headers);
   }
   async _callApiKey() {
     if (this._provider)
@@ -35246,14 +35378,14 @@ OpenAI.Evals = Evals;
 OpenAI.Containers = Containers;
 OpenAI.Skills = Skills;
 OpenAI.Videos = Videos;
-function getConnectionErrorMessage(error51) {
-  if (isUndiciDispatcherVersionMismatchError(error51)) {
+function getConnectionErrorMessage(error52) {
+  if (isUndiciDispatcherVersionMismatchError(error52)) {
     return `Connection error. This may be caused by passing an undici dispatcher, such as ProxyAgent, that is incompatible with the fetch implementation. If you are using undici's ProxyAgent, pass the fetch implementation from the same undici package: import { fetch, ProxyAgent } from 'undici'; new OpenAI({ fetch, fetchOptions: { dispatcher: new ProxyAgent(...) } });`;
   }
   return void 0;
 }
-function isUndiciDispatcherVersionMismatchError(error51) {
-  let current = error51;
+function isUndiciDispatcherVersionMismatchError(error52) {
+  let current = error52;
   for (let i = 0; i < 8 && current && typeof current === "object"; i++) {
     const err = current;
     if (err.code === "UND_ERR_INVALID_ARG" && typeof err.message === "string" && err.message.includes("invalid onRequestStart method")) {
@@ -36453,8 +36585,8 @@ function prefixIssues(path2, issues) {
 function unwrapMessage(message) {
   return typeof message === "string" ? message : message?.message;
 }
-function finalizeIssue(iss, ctx, config3) {
-  const message = iss.message ? iss.message : unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage(ctx?.error?.(iss)) ?? unwrapMessage(config3.customError?.(iss)) ?? unwrapMessage(config3.localeError?.(iss)) ?? "Invalid input";
+function finalizeIssue(iss, ctx, config2) {
+  const message = iss.message ? iss.message : unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage(ctx?.error?.(iss)) ?? unwrapMessage(config2.customError?.(iss)) ?? unwrapMessage(config2.localeError?.(iss)) ?? "Invalid input";
   const { inst: _inst, continue: _continue, input: _input, ...rest } = iss;
   rest.path ?? (rest.path = []);
   rest.message = message;
@@ -36578,10 +36710,10 @@ var initializer = (inst, def) => {
 };
 var $ZodError = $constructor("$ZodError", initializer);
 var $ZodRealError = $constructor("$ZodError", initializer, { Parent: Error });
-function flattenError(error51, mapper = (issue3) => issue3.message) {
+function flattenError(error52, mapper = (issue3) => issue3.message) {
   const fieldErrors = {};
   const formErrors = [];
-  for (const sub of error51.issues) {
+  for (const sub of error52.issues) {
     if (sub.path.length > 0) {
       fieldErrors[sub.path[0]] = fieldErrors[sub.path[0]] || [];
       fieldErrors[sub.path[0]].push(mapper(sub));
@@ -36591,10 +36723,10 @@ function flattenError(error51, mapper = (issue3) => issue3.message) {
   }
   return { formErrors, fieldErrors };
 }
-function formatError(error51, mapper = (issue3) => issue3.message) {
+function formatError(error52, mapper = (issue3) => issue3.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error52, path2 = []) => {
-    for (const issue3 of error52.issues) {
+  const processError = (error53, path2 = []) => {
+    for (const issue3 of error53.issues) {
       if (issue3.code === "invalid_union" && issue3.errors.length) {
         issue3.errors.map((issues) => processError({ issues }, [...path2, ...issue3.path]));
       } else if (issue3.code === "invalid_key") {
@@ -36624,14 +36756,14 @@ function formatError(error51, mapper = (issue3) => issue3.message) {
       }
     }
   };
-  processError(error51);
+  processError(error52);
   return fieldErrors;
 }
-function treeifyError(error51, mapper = (issue3) => issue3.message) {
+function treeifyError(error52, mapper = (issue3) => issue3.message) {
   const result = { errors: [] };
-  const processError = (error52, path2 = []) => {
+  const processError = (error53, path2 = []) => {
     var _a5, _b;
-    for (const issue3 of error52.issues) {
+    for (const issue3 of error53.issues) {
       if (issue3.code === "invalid_union" && issue3.errors.length) {
         issue3.errors.map((issues) => processError({ issues }, [...path2, ...issue3.path]));
       } else if (issue3.code === "invalid_key") {
@@ -36666,7 +36798,7 @@ function treeifyError(error51, mapper = (issue3) => issue3.message) {
       }
     }
   };
-  processError(error51);
+  processError(error52);
   return result;
 }
 function toDotPath(_path) {
@@ -36687,9 +36819,9 @@ function toDotPath(_path) {
   }
   return segs.join("");
 }
-function prettifyError(error51) {
+function prettifyError(error52) {
   const lines = [];
-  const issues = [...error51.issues].sort((a, b) => (a.path ?? []).length - (b.path ?? []).length);
+  const issues = [...error52.issues].sort((a, b) => (a.path ?? []).length - (b.path ?? []).length);
   for (const issue3 of issues) {
     lines.push(`\u2716 ${issue3.message}`);
     if (issue3.path?.length)
@@ -39687,7 +39819,7 @@ __export(locales_exports, {
 });
 
 // node_modules/zod/v4/locales/ar.js
-var error = () => {
+var error2 = () => {
   const Sizable = {
     string: { unit: "\u062D\u0631\u0641", verb: "\u0623\u0646 \u064A\u062D\u0648\u064A" },
     file: { unit: "\u0628\u0627\u064A\u062A", verb: "\u0623\u0646 \u064A\u062D\u0648\u064A" },
@@ -39789,12 +39921,12 @@ var error = () => {
 };
 function ar_default() {
   return {
-    localeError: error()
+    localeError: error2()
   };
 }
 
 // node_modules/zod/v4/locales/az.js
-var error2 = () => {
+var error3 = () => {
   const Sizable = {
     string: { unit: "simvol", verb: "olmal\u0131d\u0131r" },
     file: { unit: "bayt", verb: "olmal\u0131d\u0131r" },
@@ -39895,7 +40027,7 @@ var error2 = () => {
 };
 function az_default() {
   return {
-    localeError: error2()
+    localeError: error3()
   };
 }
 
@@ -39915,7 +40047,7 @@ function getBelarusianPlural(count, one, few, many) {
   }
   return many;
 }
-var error3 = () => {
+var error4 = () => {
   const Sizable = {
     string: {
       unit: {
@@ -40052,12 +40184,12 @@ var error3 = () => {
 };
 function be_default() {
   return {
-    localeError: error3()
+    localeError: error4()
   };
 }
 
 // node_modules/zod/v4/locales/bg.js
-var error4 = () => {
+var error5 = () => {
   const Sizable = {
     string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0430", verb: "\u0434\u0430 \u0441\u044A\u0434\u044A\u0440\u0436\u0430" },
     file: { unit: "\u0431\u0430\u0439\u0442\u0430", verb: "\u0434\u0430 \u0441\u044A\u0434\u044A\u0440\u0436\u0430" },
@@ -40173,12 +40305,12 @@ var error4 = () => {
 };
 function bg_default() {
   return {
-    localeError: error4()
+    localeError: error5()
   };
 }
 
 // node_modules/zod/v4/locales/ca.js
-var error5 = () => {
+var error6 = () => {
   const Sizable = {
     string: { unit: "car\xE0cters", verb: "contenir" },
     file: { unit: "bytes", verb: "contenir" },
@@ -40282,12 +40414,12 @@ var error5 = () => {
 };
 function ca_default() {
   return {
-    localeError: error5()
+    localeError: error6()
   };
 }
 
 // node_modules/zod/v4/locales/cs.js
-var error6 = () => {
+var error7 = () => {
   const Sizable = {
     string: { unit: "znak\u016F", verb: "m\xEDt" },
     file: { unit: "bajt\u016F", verb: "m\xEDt" },
@@ -40394,12 +40526,12 @@ var error6 = () => {
 };
 function cs_default() {
   return {
-    localeError: error6()
+    localeError: error7()
   };
 }
 
 // node_modules/zod/v4/locales/da.js
-var error7 = () => {
+var error8 = () => {
   const Sizable = {
     string: { unit: "tegn", verb: "havde" },
     file: { unit: "bytes", verb: "havde" },
@@ -40510,12 +40642,12 @@ var error7 = () => {
 };
 function da_default() {
   return {
-    localeError: error7()
+    localeError: error8()
   };
 }
 
 // node_modules/zod/v4/locales/de.js
-var error8 = () => {
+var error9 = () => {
   const Sizable = {
     string: { unit: "Zeichen", verb: "zu haben" },
     file: { unit: "Bytes", verb: "zu haben" },
@@ -40619,12 +40751,12 @@ var error8 = () => {
 };
 function de_default() {
   return {
-    localeError: error8()
+    localeError: error9()
   };
 }
 
 // node_modules/zod/v4/locales/el.js
-var error9 = () => {
+var error10 = () => {
   const Sizable = {
     string: { unit: "\u03C7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1\u03B5\u03C2", verb: "\u03BD\u03B1 \u03AD\u03C7\u03B5\u03B9" },
     file: { unit: "bytes", verb: "\u03BD\u03B1 \u03AD\u03C7\u03B5\u03B9" },
@@ -40729,12 +40861,12 @@ var error9 = () => {
 };
 function el_default() {
   return {
-    localeError: error9()
+    localeError: error10()
   };
 }
 
 // node_modules/zod/v4/locales/en.js
-var error10 = () => {
+var error11 = () => {
   const Sizable = {
     string: { unit: "characters", verb: "to have" },
     file: { unit: "bytes", verb: "to have" },
@@ -40842,12 +40974,12 @@ var error10 = () => {
 };
 function en_default() {
   return {
-    localeError: error10()
+    localeError: error11()
   };
 }
 
 // node_modules/zod/v4/locales/eo.js
-var error11 = () => {
+var error12 = () => {
   const Sizable = {
     string: { unit: "karaktrojn", verb: "havi" },
     file: { unit: "bajtojn", verb: "havi" },
@@ -40952,12 +41084,12 @@ var error11 = () => {
 };
 function eo_default() {
   return {
-    localeError: error11()
+    localeError: error12()
   };
 }
 
 // node_modules/zod/v4/locales/es.js
-var error12 = () => {
+var error13 = () => {
   const Sizable = {
     string: { unit: "caracteres", verb: "tener" },
     file: { unit: "bytes", verb: "tener" },
@@ -41085,12 +41217,12 @@ var error12 = () => {
 };
 function es_default() {
   return {
-    localeError: error12()
+    localeError: error13()
   };
 }
 
 // node_modules/zod/v4/locales/fa.js
-var error13 = () => {
+var error14 = () => {
   const Sizable = {
     string: { unit: "\u06A9\u0627\u0631\u0627\u06A9\u062A\u0631", verb: "\u062F\u0627\u0634\u062A\u0647 \u0628\u0627\u0634\u062F" },
     file: { unit: "\u0628\u0627\u06CC\u062A", verb: "\u062F\u0627\u0634\u062A\u0647 \u0628\u0627\u0634\u062F" },
@@ -41200,12 +41332,12 @@ var error13 = () => {
 };
 function fa_default() {
   return {
-    localeError: error13()
+    localeError: error14()
   };
 }
 
 // node_modules/zod/v4/locales/fi.js
-var error14 = () => {
+var error15 = () => {
   const Sizable = {
     string: { unit: "merkki\xE4", subject: "merkkijonon" },
     file: { unit: "tavua", subject: "tiedoston" },
@@ -41313,12 +41445,12 @@ var error14 = () => {
 };
 function fi_default() {
   return {
-    localeError: error14()
+    localeError: error15()
   };
 }
 
 // node_modules/zod/v4/locales/fr.js
-var error15 = () => {
+var error16 = () => {
   const Sizable = {
     string: { unit: "caract\xE8res", verb: "avoir" },
     file: { unit: "octets", verb: "avoir" },
@@ -41439,12 +41571,12 @@ var error15 = () => {
 };
 function fr_default() {
   return {
-    localeError: error15()
+    localeError: error16()
   };
 }
 
 // node_modules/zod/v4/locales/fr-CA.js
-var error16 = () => {
+var error17 = () => {
   const Sizable = {
     string: { unit: "caract\xE8res", verb: "avoir" },
     file: { unit: "octets", verb: "avoir" },
@@ -41547,12 +41679,12 @@ var error16 = () => {
 };
 function fr_CA_default() {
   return {
-    localeError: error16()
+    localeError: error17()
   };
 }
 
 // node_modules/zod/v4/locales/he.js
-var error17 = () => {
+var error18 = () => {
   const TypeNames = {
     string: { label: "\u05DE\u05D7\u05E8\u05D5\u05D6\u05EA", gender: "f" },
     number: { label: "\u05DE\u05E1\u05E4\u05E8", gender: "m" },
@@ -41742,12 +41874,12 @@ var error17 = () => {
 };
 function he_default() {
   return {
-    localeError: error17()
+    localeError: error18()
   };
 }
 
 // node_modules/zod/v4/locales/hr.js
-var error18 = () => {
+var error19 = () => {
   const Sizable = {
     string: { unit: "znakova", verb: "imati" },
     file: { unit: "bajtova", verb: "imati" },
@@ -41865,12 +41997,12 @@ var error18 = () => {
 };
 function hr_default() {
   return {
-    localeError: error18()
+    localeError: error19()
   };
 }
 
 // node_modules/zod/v4/locales/hu.js
-var error19 = () => {
+var error20 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "legyen" },
     file: { unit: "byte", verb: "legyen" },
@@ -41974,7 +42106,7 @@ var error19 = () => {
 };
 function hu_default() {
   return {
-    localeError: error19()
+    localeError: error20()
   };
 }
 
@@ -41989,7 +42121,7 @@ function withDefiniteArticle(word) {
   const lastChar = word[word.length - 1];
   return word + (vowels.includes(lastChar) ? "\u0576" : "\u0568");
 }
-var error20 = () => {
+var error21 = () => {
   const Sizable = {
     string: {
       unit: {
@@ -42122,12 +42254,12 @@ var error20 = () => {
 };
 function hy_default() {
   return {
-    localeError: error20()
+    localeError: error21()
   };
 }
 
 // node_modules/zod/v4/locales/id.js
-var error21 = () => {
+var error22 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "memiliki" },
     file: { unit: "byte", verb: "memiliki" },
@@ -42229,12 +42361,12 @@ var error21 = () => {
 };
 function id_default() {
   return {
-    localeError: error21()
+    localeError: error22()
   };
 }
 
 // node_modules/zod/v4/locales/is.js
-var error22 = () => {
+var error23 = () => {
   const Sizable = {
     string: { unit: "stafi", verb: "a\xF0 hafa" },
     file: { unit: "b\xE6ti", verb: "a\xF0 hafa" },
@@ -42339,12 +42471,12 @@ var error22 = () => {
 };
 function is_default() {
   return {
-    localeError: error22()
+    localeError: error23()
   };
 }
 
 // node_modules/zod/v4/locales/it.js
-var error23 = () => {
+var error24 = () => {
   const Sizable = {
     string: { unit: "caratteri", verb: "avere" },
     file: { unit: "byte", verb: "avere" },
@@ -42448,12 +42580,12 @@ var error23 = () => {
 };
 function it_default() {
   return {
-    localeError: error23()
+    localeError: error24()
   };
 }
 
 // node_modules/zod/v4/locales/ja.js
-var error24 = () => {
+var error25 = () => {
   const Sizable = {
     string: { unit: "\u6587\u5B57", verb: "\u3067\u3042\u308B" },
     file: { unit: "\u30D0\u30A4\u30C8", verb: "\u3067\u3042\u308B" },
@@ -42556,12 +42688,12 @@ var error24 = () => {
 };
 function ja_default() {
   return {
-    localeError: error24()
+    localeError: error25()
   };
 }
 
 // node_modules/zod/v4/locales/ka.js
-var error25 = () => {
+var error26 = () => {
   const Sizable = {
     string: { unit: "\u10E1\u10D8\u10DB\u10D1\u10DD\u10DA\u10DD", verb: "\u10E3\u10DC\u10D3\u10D0 \u10E8\u10D4\u10D8\u10EA\u10D0\u10D5\u10D3\u10D4\u10E1" },
     file: { unit: "\u10D1\u10D0\u10D8\u10E2\u10D8", verb: "\u10E3\u10DC\u10D3\u10D0 \u10E8\u10D4\u10D8\u10EA\u10D0\u10D5\u10D3\u10D4\u10E1" },
@@ -42669,12 +42801,12 @@ var error25 = () => {
 };
 function ka_default() {
   return {
-    localeError: error25()
+    localeError: error26()
   };
 }
 
 // node_modules/zod/v4/locales/km.js
-var error26 = () => {
+var error27 = () => {
   const Sizable = {
     string: { unit: "\u178F\u17BD\u17A2\u1780\u17D2\u179F\u179A", verb: "\u1782\u17BD\u179A\u1798\u17B6\u1793" },
     file: { unit: "\u1794\u17C3", verb: "\u1782\u17BD\u179A\u1798\u17B6\u1793" },
@@ -42780,7 +42912,7 @@ var error26 = () => {
 };
 function km_default() {
   return {
-    localeError: error26()
+    localeError: error27()
   };
 }
 
@@ -42790,7 +42922,7 @@ function kh_default() {
 }
 
 // node_modules/zod/v4/locales/ko.js
-var error27 = () => {
+var error28 = () => {
   const Sizable = {
     string: { unit: "\uBB38\uC790", verb: "to have" },
     file: { unit: "\uBC14\uC774\uD2B8", verb: "to have" },
@@ -42897,7 +43029,7 @@ var error27 = () => {
 };
 function ko_default() {
   return {
-    localeError: error27()
+    localeError: error28()
   };
 }
 
@@ -42915,7 +43047,7 @@ function getUnitTypeFromNumber(number4) {
     return "one";
   return "few";
 }
-var error28 = () => {
+var error29 = () => {
   const Sizable = {
     string: {
       unit: {
@@ -43101,12 +43233,12 @@ var error28 = () => {
 };
 function lt_default() {
   return {
-    localeError: error28()
+    localeError: error29()
   };
 }
 
 // node_modules/zod/v4/locales/mk.js
-var error29 = () => {
+var error30 = () => {
   const Sizable = {
     string: { unit: "\u0437\u043D\u0430\u0446\u0438", verb: "\u0434\u0430 \u0438\u043C\u0430\u0430\u0442" },
     file: { unit: "\u0431\u0430\u0458\u0442\u0438", verb: "\u0434\u0430 \u0438\u043C\u0430\u0430\u0442" },
@@ -43211,12 +43343,12 @@ var error29 = () => {
 };
 function mk_default() {
   return {
-    localeError: error29()
+    localeError: error30()
   };
 }
 
 // node_modules/zod/v4/locales/ms.js
-var error30 = () => {
+var error31 = () => {
   const Sizable = {
     string: { unit: "aksara", verb: "mempunyai" },
     file: { unit: "bait", verb: "mempunyai" },
@@ -43319,12 +43451,12 @@ var error30 = () => {
 };
 function ms_default() {
   return {
-    localeError: error30()
+    localeError: error31()
   };
 }
 
 // node_modules/zod/v4/locales/nl.js
-var error31 = () => {
+var error32 = () => {
   const Sizable = {
     string: { unit: "tekens", verb: "heeft" },
     file: { unit: "bytes", verb: "heeft" },
@@ -43430,12 +43562,12 @@ var error31 = () => {
 };
 function nl_default() {
   return {
-    localeError: error31()
+    localeError: error32()
   };
 }
 
 // node_modules/zod/v4/locales/no.js
-var error32 = () => {
+var error33 = () => {
   const Sizable = {
     string: { unit: "tegn", verb: "\xE5 ha" },
     file: { unit: "bytes", verb: "\xE5 ha" },
@@ -43539,12 +43671,12 @@ var error32 = () => {
 };
 function no_default() {
   return {
-    localeError: error32()
+    localeError: error33()
   };
 }
 
 // node_modules/zod/v4/locales/ota.js
-var error33 = () => {
+var error34 = () => {
   const Sizable = {
     string: { unit: "harf", verb: "olmal\u0131d\u0131r" },
     file: { unit: "bayt", verb: "olmal\u0131d\u0131r" },
@@ -43649,12 +43781,12 @@ var error33 = () => {
 };
 function ota_default() {
   return {
-    localeError: error33()
+    localeError: error34()
   };
 }
 
 // node_modules/zod/v4/locales/ps.js
-var error34 = () => {
+var error35 = () => {
   const Sizable = {
     string: { unit: "\u062A\u0648\u06A9\u064A", verb: "\u0648\u0644\u0631\u064A" },
     file: { unit: "\u0628\u0627\u06CC\u067C\u0633", verb: "\u0648\u0644\u0631\u064A" },
@@ -43764,12 +43896,12 @@ var error34 = () => {
 };
 function ps_default() {
   return {
-    localeError: error34()
+    localeError: error35()
   };
 }
 
 // node_modules/zod/v4/locales/pl.js
-var error35 = () => {
+var error36 = () => {
   const Sizable = {
     string: { unit: "znak\xF3w", verb: "mie\u0107" },
     file: { unit: "bajt\xF3w", verb: "mie\u0107" },
@@ -43874,12 +44006,12 @@ var error35 = () => {
 };
 function pl_default() {
   return {
-    localeError: error35()
+    localeError: error36()
   };
 }
 
 // node_modules/zod/v4/locales/pt.js
-var error36 = () => {
+var error37 = () => {
   const Sizable = {
     string: { unit: "caracteres", verb: "ter" },
     file: { unit: "bytes", verb: "ter" },
@@ -43983,12 +44115,12 @@ var error36 = () => {
 };
 function pt_default() {
   return {
-    localeError: error36()
+    localeError: error37()
   };
 }
 
 // node_modules/zod/v4/locales/ro.js
-var error37 = () => {
+var error38 = () => {
   const Sizable = {
     string: { unit: "caractere", verb: "s\u0103 aib\u0103" },
     file: { unit: "octe\u021Bi", verb: "s\u0103 aib\u0103" },
@@ -44103,7 +44235,7 @@ var error37 = () => {
 };
 function ro_default() {
   return {
-    localeError: error37()
+    localeError: error38()
   };
 }
 
@@ -44123,7 +44255,7 @@ function getRussianPlural(count, one, few, many) {
   }
   return many;
 }
-var error38 = () => {
+var error39 = () => {
   const Sizable = {
     string: {
       unit: {
@@ -44260,12 +44392,12 @@ var error38 = () => {
 };
 function ru_default() {
   return {
-    localeError: error38()
+    localeError: error39()
   };
 }
 
 // node_modules/zod/v4/locales/sl.js
-var error39 = () => {
+var error40 = () => {
   const Sizable = {
     string: { unit: "znakov", verb: "imeti" },
     file: { unit: "bajtov", verb: "imeti" },
@@ -44370,12 +44502,12 @@ var error39 = () => {
 };
 function sl_default() {
   return {
-    localeError: error39()
+    localeError: error40()
   };
 }
 
 // node_modules/zod/v4/locales/sv.js
-var error40 = () => {
+var error41 = () => {
   const Sizable = {
     string: { unit: "tecken", verb: "att ha" },
     file: { unit: "bytes", verb: "att ha" },
@@ -44481,12 +44613,12 @@ var error40 = () => {
 };
 function sv_default() {
   return {
-    localeError: error40()
+    localeError: error41()
   };
 }
 
 // node_modules/zod/v4/locales/ta.js
-var error41 = () => {
+var error42 = () => {
   const Sizable = {
     string: { unit: "\u0B8E\u0BB4\u0BC1\u0BA4\u0BCD\u0BA4\u0BC1\u0B95\u0BCD\u0B95\u0BB3\u0BCD", verb: "\u0B95\u0BCA\u0BA3\u0BCD\u0B9F\u0BBF\u0BB0\u0BC1\u0B95\u0BCD\u0B95 \u0BB5\u0BC7\u0BA3\u0BCD\u0B9F\u0BC1\u0BAE\u0BCD" },
     file: { unit: "\u0BAA\u0BC8\u0B9F\u0BCD\u0B9F\u0BC1\u0B95\u0BB3\u0BCD", verb: "\u0B95\u0BCA\u0BA3\u0BCD\u0B9F\u0BBF\u0BB0\u0BC1\u0B95\u0BCD\u0B95 \u0BB5\u0BC7\u0BA3\u0BCD\u0B9F\u0BC1\u0BAE\u0BCD" },
@@ -44592,12 +44724,12 @@ var error41 = () => {
 };
 function ta_default() {
   return {
-    localeError: error41()
+    localeError: error42()
   };
 }
 
 // node_modules/zod/v4/locales/th.js
-var error42 = () => {
+var error43 = () => {
   const Sizable = {
     string: { unit: "\u0E15\u0E31\u0E27\u0E2D\u0E31\u0E01\u0E29\u0E23", verb: "\u0E04\u0E27\u0E23\u0E21\u0E35" },
     file: { unit: "\u0E44\u0E1A\u0E15\u0E4C", verb: "\u0E04\u0E27\u0E23\u0E21\u0E35" },
@@ -44703,12 +44835,12 @@ var error42 = () => {
 };
 function th_default() {
   return {
-    localeError: error42()
+    localeError: error43()
   };
 }
 
 // node_modules/zod/v4/locales/tr.js
-var error43 = () => {
+var error44 = () => {
   const Sizable = {
     string: { unit: "karakter", verb: "olmal\u0131" },
     file: { unit: "bayt", verb: "olmal\u0131" },
@@ -44809,12 +44941,12 @@ var error43 = () => {
 };
 function tr_default() {
   return {
-    localeError: error43()
+    localeError: error44()
   };
 }
 
 // node_modules/zod/v4/locales/uk.js
-var error44 = () => {
+var error45 = () => {
   const Sizable = {
     string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0456\u0432", verb: "\u043C\u0430\u0442\u0438\u043C\u0435" },
     file: { unit: "\u0431\u0430\u0439\u0442\u0456\u0432", verb: "\u043C\u0430\u0442\u0438\u043C\u0435" },
@@ -44918,7 +45050,7 @@ var error44 = () => {
 };
 function uk_default() {
   return {
-    localeError: error44()
+    localeError: error45()
   };
 }
 
@@ -44928,7 +45060,7 @@ function ua_default() {
 }
 
 // node_modules/zod/v4/locales/ur.js
-var error45 = () => {
+var error46 = () => {
   const Sizable = {
     string: { unit: "\u062D\u0631\u0648\u0641", verb: "\u06C1\u0648\u0646\u0627" },
     file: { unit: "\u0628\u0627\u0626\u0679\u0633", verb: "\u06C1\u0648\u0646\u0627" },
@@ -45034,12 +45166,12 @@ var error45 = () => {
 };
 function ur_default() {
   return {
-    localeError: error45()
+    localeError: error46()
   };
 }
 
 // node_modules/zod/v4/locales/uz.js
-var error46 = () => {
+var error47 = () => {
   const Sizable = {
     string: { unit: "belgi", verb: "bo\u2018lishi kerak" },
     file: { unit: "bayt", verb: "bo\u2018lishi kerak" },
@@ -45145,12 +45277,12 @@ var error46 = () => {
 };
 function uz_default() {
   return {
-    localeError: error46()
+    localeError: error47()
   };
 }
 
 // node_modules/zod/v4/locales/vi.js
-var error47 = () => {
+var error48 = () => {
   const Sizable = {
     string: { unit: "k\xFD t\u1EF1", verb: "c\xF3" },
     file: { unit: "byte", verb: "c\xF3" },
@@ -45254,12 +45386,12 @@ var error47 = () => {
 };
 function vi_default() {
   return {
-    localeError: error47()
+    localeError: error48()
   };
 }
 
 // node_modules/zod/v4/locales/zh-CN.js
-var error48 = () => {
+var error49 = () => {
   const Sizable = {
     string: { unit: "\u5B57\u7B26", verb: "\u5305\u542B" },
     file: { unit: "\u5B57\u8282", verb: "\u5305\u542B" },
@@ -45364,12 +45496,12 @@ var error48 = () => {
 };
 function zh_CN_default() {
   return {
-    localeError: error48()
+    localeError: error49()
   };
 }
 
 // node_modules/zod/v4/locales/zh-TW.js
-var error49 = () => {
+var error50 = () => {
   const Sizable = {
     string: { unit: "\u5B57\u5143", verb: "\u64C1\u6709" },
     file: { unit: "\u4F4D\u5143\u7D44", verb: "\u64C1\u6709" },
@@ -45472,12 +45604,12 @@ var error49 = () => {
 };
 function zh_TW_default() {
   return {
-    localeError: error49()
+    localeError: error50()
   };
 }
 
 // node_modules/zod/v4/locales/yo.js
-var error50 = () => {
+var error51 = () => {
   const Sizable = {
     string: { unit: "\xE0mi", verb: "n\xED" },
     file: { unit: "bytes", verb: "n\xED" },
@@ -45580,7 +45712,7 @@ var error50 = () => {
 };
 function yo_default() {
   return {
-    localeError: error50()
+    localeError: error51()
   };
 }
 
@@ -50043,8 +50175,8 @@ var ZodError2 = class _ZodError extends Error {
       return issue3.message;
     };
     const fieldErrors = { _errors: [] };
-    const processError = (error51) => {
-      for (const issue3 of error51.issues) {
+    const processError = (error52) => {
+      for (const issue3 of error52.issues) {
         if (issue3.code === "invalid_union") {
           issue3.unionErrors.map(processError);
         } else if (issue3.code === "invalid_return_type") {
@@ -50107,8 +50239,8 @@ var ZodError2 = class _ZodError extends Error {
   }
 };
 ZodError2.create = (issues) => {
-  const error51 = new ZodError2(issues);
-  return error51;
+  const error52 = new ZodError2(issues);
+  return error52;
 };
 
 // node_modules/zod/v3/locales/en.js
@@ -50368,8 +50500,8 @@ var handleResult = (ctx, result) => {
       get error() {
         if (this._error)
           return this._error;
-        const error51 = new ZodError2(ctx.common.issues);
-        this._error = error51;
+        const error52 = new ZodError2(ctx.common.issues);
+        this._error = error52;
         return this._error;
       }
     };
@@ -53024,25 +53156,25 @@ var ZodFunction2 = class _ZodFunction extends ZodType2 {
       });
       return INVALID;
     }
-    function makeArgsIssue(args, error51) {
+    function makeArgsIssue(args, error52) {
       return makeIssue({
         data: args,
         path: ctx.path,
         errorMaps: [ctx.common.contextualErrorMap, ctx.schemaErrorMap, getErrorMap2(), en_default2].filter((x) => !!x),
         issueData: {
           code: ZodIssueCode2.invalid_arguments,
-          argumentsError: error51
+          argumentsError: error52
         }
       });
     }
-    function makeReturnsIssue(returns, error51) {
+    function makeReturnsIssue(returns, error52) {
       return makeIssue({
         data: returns,
         path: ctx.path,
         errorMaps: [ctx.common.contextualErrorMap, ctx.schemaErrorMap, getErrorMap2(), en_default2].filter((x) => !!x),
         issueData: {
           code: ZodIssueCode2.invalid_return_type,
-          returnTypeError: error51
+          returnTypeError: error52
         }
       });
     }
@@ -53051,15 +53183,15 @@ var ZodFunction2 = class _ZodFunction extends ZodType2 {
     if (this._def.returns instanceof ZodPromise2) {
       const me = this;
       return OK(async function(...args) {
-        const error51 = new ZodError2([]);
+        const error52 = new ZodError2([]);
         const parsedArgs = await me._def.args.parseAsync(args, params).catch((e) => {
-          error51.addIssue(makeArgsIssue(args, e));
-          throw error51;
+          error52.addIssue(makeArgsIssue(args, e));
+          throw error52;
         });
         const result = await Reflect.apply(fn, this, parsedArgs);
         const parsedReturns = await me._def.returns._def.type.parseAsync(result, params).catch((e) => {
-          error51.addIssue(makeReturnsIssue(result, e));
-          throw error51;
+          error52.addIssue(makeReturnsIssue(result, e));
+          throw error52;
         });
         return parsedReturns;
       });
@@ -54838,13 +54970,13 @@ var addMeta = (def, refs, jsonSchema) => {
 var zodToJsonSchema = (schema, options) => {
   const refs = getRefs(options);
   const name = typeof options === "string" ? options : options?.nameStrategy === "title" ? void 0 : options?.name;
-  const main = parseDef(schema._def, name === void 0 ? refs : {
+  const main2 = parseDef(schema._def, name === void 0 ? refs : {
     ...refs,
     currentPath: [...refs.basePath, refs.definitionPath, name]
   }, false) ?? {};
   const title = typeof options === "object" && options.name !== void 0 && options.nameStrategy === "title" ? options.name : void 0;
   if (title !== void 0) {
-    main.title = title;
+    main2.title = title;
   }
   const definitions = (() => {
     if (isEmptyObj2(refs.definitions)) {
@@ -54864,23 +54996,23 @@ var zodToJsonSchema = (schema, options) => {
     return definitions2;
   })();
   const combined = name === void 0 ? definitions ? {
-    ...main,
+    ...main2,
     [refs.definitionPath]: definitions
-  } : main : refs.nameStrategy === "duplicate-ref" ? {
-    ...main,
+  } : main2 : refs.nameStrategy === "duplicate-ref" ? {
+    ...main2,
     ...definitions || refs.seenRefs.size ? {
       [refs.definitionPath]: {
         ...definitions,
         // only actually duplicate the schema definition if it was ever referenced
         // otherwise the duplication is completely pointless
-        ...refs.seenRefs.size ? { [name]: main } : void 0
+        ...refs.seenRefs.size ? { [name]: main2 } : void 0
       }
     } : void 0
   } : {
     $ref: [...refs.$refStrategy === "relative" ? [] : refs.basePath, refs.definitionPath, name].join("/"),
     [refs.definitionPath]: {
       ...definitions,
-      [name]: main
+      [name]: main2
     }
   };
   if (refs.target === "jsonSchema7") {
@@ -56209,6 +56341,7 @@ var reviewCommentSchema = external_exports.object({
   comment: external_exports.string().min(1)
 });
 var reviewResponseSchema = external_exports.object({
+  decision: external_exports.enum(["APPROVE", "REQUEST_CHANGES", "COMMENT"]),
   summary: external_exports.string(),
   comments: external_exports.array(reviewCommentSchema)
 });
@@ -56217,11 +56350,11 @@ var reviewResponseSchema = external_exports.object({
 var OpenAIClient = class {
   client;
   model;
-  constructor(config3) {
+  constructor(config2) {
     this.client = new OpenAI({
-      apiKey: config3.openAiApiKey
+      apiKey: config2.openAiApiKey
     });
-    this.model = config3.model;
+    this.model = config2.model;
   }
   async review(prompt) {
     const input = [];
@@ -56250,15 +56383,22 @@ var OpenAIClient = class {
 };
 
 // src/index.ts
-var config2 = Config.load();
-var githubContext = GithubContext.load();
-var reviewService = new ReviewService(
-  new GithubClient(config2, githubContext),
-  new PromptLoader(config2.promptPath),
-  new PromptBuilder(),
-  new OpenAIClient(config2)
-);
-await reviewService.review();
+async function main() {
+  const config2 = Config.load();
+  const githubContext = GithubContext.tryLoad();
+  if (!githubContext) {
+    info("Skipping action.");
+    return;
+  }
+  const reviewService = new ReviewService(
+    new GithubClient(config2, githubContext),
+    new PromptLoader(config2.promptPath),
+    new PromptBuilder(),
+    new OpenAIClient(config2)
+  );
+  await reviewService.review();
+}
+main().catch((error52) => setFailed(error52.message));
 /*! Bundled license information:
 
 undici/lib/web/fetch/body.js:

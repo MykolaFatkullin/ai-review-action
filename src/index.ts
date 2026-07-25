@@ -5,15 +5,25 @@ import { GithubClient } from "./github/GithubClient.js";
 import { PromptLoader } from "./prompt/PromptLoader.js";
 import { PromptBuilder } from "./prompt/PromptBuilder.js";
 import { OpenAIClient } from "./openai/OpenAIClient.js";
+import * as core from "@actions/core";
 
-const config = Config.load();
-const githubContext = GithubContext.load();
+async function main() {
+  const config = Config.load();
+  const githubContext = GithubContext.tryLoad();
 
-const reviewService = new ReviewService(
-  new GithubClient(config, githubContext),
-  new PromptLoader(config.promptPath),
-  new PromptBuilder(),
-  new OpenAIClient(config),
-);
+  if (!githubContext) {
+    core.info("Skipping action.");
+    return;
+  }
 
-await reviewService.review();
+  const reviewService = new ReviewService(
+    new GithubClient(config, githubContext),
+    new PromptLoader(config.promptPath),
+    new PromptBuilder(),
+    new OpenAIClient(config),
+  );
+
+  await reviewService.review();
+}
+
+main().catch(error => core.setFailed(error.message));

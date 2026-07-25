@@ -7,6 +7,7 @@ export const reviewCommentSchema = z.object({
 });
 
 export const reviewResponseSchema = z.object({
+  decision: z.enum(["APPROVE", "REQUEST_CHANGES", "COMMENT"]),
   summary: z.string(),
   comments: z.array(reviewCommentSchema),
 });

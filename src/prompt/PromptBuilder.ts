@@ -21,8 +21,10 @@ export class PromptBuilder {
     }
 
     systemPrompts.push(`
-      Return ONLY JSON in this format:
+      Return ONLY valid JSON.
+      
       {
+        "decision": "APPROVE" | "REQUEST_CHANGES" | "COMMENT",
         "summary": "...",
         "comments": [
           {
@@ -32,6 +34,15 @@ export class PromptBuilder {
           }
         ]
       }
+      
+      Rules:
+      - Return ONLY JSON.
+      - Do not wrap JSON in markdown.
+      - Do not add explanations before or after JSON.
+      - If there are no review comments, return an empty comments array.
+      - Use APPROVE only when no issues requiring changes were found.
+      - Use REQUEST_CHANGES when the pull request contains issues that should be fixed before merging.
+      - Use COMMENT when only optional improvements or suggestions are found.
     `);
 
     userPrompts.push("# Pull Request");

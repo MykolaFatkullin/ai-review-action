@@ -10,6 +10,10 @@ inputs:
     description: OpenAI API Key
     required: true
 
+  github-bot-login:
+    description: GitHub bot login
+    required: true
+
   prompt-path:
     description: Path to prompt directory
     required: false
