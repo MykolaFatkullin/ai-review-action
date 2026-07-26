@@ -24227,6 +24227,8 @@ var GithubContext = class _GithubContext {
         return this.fromPullRequest();
       case "issue_comment":
         return this.fromIssueComment();
+      case "workflow_run":
+        return this.fromWorkflowRun();
       default:
         throw new Error(`Unsupported event: ${context2.eventName}`);
     }
@@ -24255,6 +24257,21 @@ var GithubContext = class _GithubContext {
       context2.repo.owner,
       context2.repo.repo,
       issue3.number
+    );
+  }
+  static fromWorkflowRun() {
+    const workflowRun = context2.payload.workflow_run;
+    if (!workflowRun) {
+      throw new Error("Missing workflow_run payload.");
+    }
+    if (!workflowRun.pull_requests?.length) {
+      throw new Error("Workflow run is not associated with a pull request.");
+    }
+    const pr = workflowRun.pull_requests[0];
+    return new _GithubContext(
+      context2.repo.owner,
+      context2.repo.repo,
+      pr.number
     );
   }
 };
