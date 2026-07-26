@@ -66,6 +66,12 @@ export class GithubContext {
       throw new Error("Workflow run is not associated with a pull request.");
     }
 
+    if (workflowRun.pull_requests.length !== 1) {
+      throw new Error(
+        `Expected exactly one associated pull request, got ${workflowRun.pull_requests.length}.`,
+      );
+    }
+
     const pr = workflowRun.pull_requests[0];
 
     return new GithubContext(
