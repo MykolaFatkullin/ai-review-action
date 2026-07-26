@@ -21,6 +21,7 @@ async function main() {
     new PromptLoader(config.promptPath),
     new PromptBuilder(),
     new OpenAIClient(config),
+    config.excludeFiles,
   );
 
   await reviewService.review();

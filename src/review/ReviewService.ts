@@ -10,6 +10,7 @@ export class ReviewService {
     private readonly promptLoader: PromptLoader,
     private readonly promptBuilder: PromptBuilder,
     private readonly openAi: OpenAIClient,
+    private readonly excludedFilePatterns: string[],
   ) {}
 
   async review(): Promise<void> {
@@ -21,8 +22,10 @@ export class ReviewService {
     const context = await this.github.getReviewContext();
 
     const files = await this.github.getChangedFiles();
+    const filteredFiles = this.promptBuilder.filterFiles(files, this.excludedFilePatterns);
 
-    if (files.length === 0) {
+    if (filteredFiles.length === 0) {
+      core.info("Skipping AI review: all changed files were excluded by the file filter.");
       return;
     }
 
@@ -30,14 +33,14 @@ export class ReviewService {
 
     const prompt = this.promptBuilder.build(
       context,
-      files,
+      filteredFiles,
       prompts,
     );
 
     const review = await this.openAi.review(prompt);
 
     const allowedLinesByPath = new Map(
-      files.map(file => [file.path, new Set(file.rightLines)]),
+      filteredFiles.map(file => [file.path, new Set(file.rightLines)]),
     );
 
     const validComments = [];

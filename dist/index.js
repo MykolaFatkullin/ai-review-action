@@ -20210,20 +20210,24 @@ var Config = class _Config {
   model;
   promptPath;
   githubBotLogin;
-  constructor(githubToken, openAiApiKey, model, promptPath, githubBotLogin) {
+  excludeFiles;
+  constructor(githubToken, openAiApiKey, model, promptPath, githubBotLogin, excludeFiles) {
     this.githubToken = githubToken;
     this.openAiApiKey = openAiApiKey;
     this.model = model;
     this.promptPath = promptPath;
     this.githubBotLogin = githubBotLogin;
+    this.excludeFiles = excludeFiles;
   }
   static load() {
+    const excludeFiles = getInput("exclude-files").split(/[\n,]/).map((pattern) => pattern.trim()).filter(Boolean);
     return new _Config(
       getInput("github-token", { required: true }),
       getInput("openai-api-key", { required: true }),
       getInput("model") || "gpt-5.5",
       getInput("prompt-path") || ".github/prompts",
-      getInput("github-bot-login")
+      getInput("github-bot-login"),
+      excludeFiles
     );
   }
 };
@@ -24257,16 +24261,18 @@ var GithubContext = class _GithubContext {
 
 // src/review/ReviewService.ts
 var ReviewService = class {
-  constructor(github, promptLoader, promptBuilder, openAi) {
+  constructor(github, promptLoader, promptBuilder, openAi, excludedFilePatterns) {
     this.github = github;
     this.promptLoader = promptLoader;
     this.promptBuilder = promptBuilder;
     this.openAi = openAi;
+    this.excludedFilePatterns = excludedFilePatterns;
   }
   github;
   promptLoader;
   promptBuilder;
   openAi;
+  excludedFilePatterns;
   async review() {
     if (!await this.github.isReviewRequired()) {
       info("Skipping AI review: no new commits since the last review.");
@@ -24274,18 +24280,20 @@ var ReviewService = class {
     }
     const context3 = await this.github.getReviewContext();
     const files = await this.github.getChangedFiles();
-    if (files.length === 0) {
+    const filteredFiles = this.promptBuilder.filterFiles(files, this.excludedFilePatterns);
+    if (filteredFiles.length === 0) {
+      info("Skipping AI review: all changed files were excluded by the file filter.");
       return;
     }
     const prompts = await this.promptLoader.load();
     const prompt = this.promptBuilder.build(
       context3,
-      files,
+      filteredFiles,
       prompts
     );
     const review = await this.openAi.review(prompt);
     const allowedLinesByPath = new Map(
-      files.map((file2) => [file2.path, new Set(file2.rightLines)])
+      filteredFiles.map((file2) => [file2.path, new Set(file2.rightLines)])
     );
     const validComments = [];
     const unplaceableComments = [];
@@ -24473,6 +24481,12 @@ var PromptLoader = class {
 
 // src/prompt/PromptBuilder.ts
 var PromptBuilder = class {
+  filterFiles(files, excludedPatterns) {
+    if (excludedPatterns.length === 0) {
+      return files;
+    }
+    return files.filter((file2) => !excludedPatterns.some((pattern) => this.matchesPattern(file2.path, pattern)));
+  }
   build(context3, files, prompts) {
     const systemPrompts = [];
     const userPrompts = [];
@@ -24540,6 +24554,15 @@ var PromptBuilder = class {
       system: systemPrompts.join("\n\n"),
       user: userPrompts.join("\n\n")
     };
+  }
+  matchesPattern(path2, pattern) {
+    const normalizedPath = path2.replaceAll("\\", "/");
+    const normalizedPattern = pattern.replaceAll("\\", "/");
+    return this.patternToRegExp(normalizedPattern).test(normalizedPath) || !normalizedPattern.includes("/") && this.patternToRegExp(normalizedPattern).test(normalizedPath.split("/").at(-1) ?? "");
+  }
+  patternToRegExp(pattern) {
+    const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&").replaceAll("**", "\0").replaceAll("*", "[^/]*").replaceAll("?", "[^/]").replaceAll("\0", ".*");
+    return new RegExp(`^${escaped}$`);
   }
 };
 
@@ -56502,7 +56525,8 @@ async function main() {
     new GithubClient(config2, githubContext),
     new PromptLoader(config2.promptPath),
     new PromptBuilder(),
-    new OpenAIClient(config2)
+    new OpenAIClient(config2),
+    config2.excludeFiles
   );
   await reviewService.review();
 }

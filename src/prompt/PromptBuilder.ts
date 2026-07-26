@@ -3,6 +3,16 @@ import { ChangedFile } from "../types/ChangedFile.js";
 import { Prompt } from "../types/Prompt.js";
 
 export class PromptBuilder {
+  filterFiles(files: ChangedFile[], excludedPatterns: string[]): ChangedFile[] {
+    if (excludedPatterns.length === 0) {
+      return files;
+    }
+
+    return files.filter(file => (
+      !excludedPatterns.some(pattern => this.matchesPattern(file.path, pattern))
+    ));
+  }
+
   build(
     context: ReviewContext,
     files: ChangedFile[],
@@ -87,5 +97,24 @@ export class PromptBuilder {
       system: systemPrompts.join("\n\n"),
       user: userPrompts.join("\n\n"),
     };
+  }
+
+  private matchesPattern(path: string, pattern: string): boolean {
+    const normalizedPath = path.replaceAll("\\", "/");
+    const normalizedPattern = pattern.replaceAll("\\", "/");
+
+    return this.patternToRegExp(normalizedPattern).test(normalizedPath)
+      || (!normalizedPattern.includes("/") && this.patternToRegExp(normalizedPattern).test(normalizedPath.split("/").at(-1) ?? ""));
+  }
+
+  private patternToRegExp(pattern: string): RegExp {
+    const escaped = pattern
+      .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+      .replaceAll("**", "\u0000")
+      .replaceAll("*", "[^/]*")
+      .replaceAll("?", "[^/]")
+      .replaceAll("\u0000", ".*");
+
+    return new RegExp(`^${escaped}$`);
   }
 }

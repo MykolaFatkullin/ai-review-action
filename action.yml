@@ -19,6 +19,11 @@ inputs:
     required: false
     default: ".github/prompts"
 
+  exclude-files:
+    description: Comma or newline separated glob patterns for files to exclude from review
+    required: false
+    default: ""
+
   model:
     description: OpenAI model
     required: false
