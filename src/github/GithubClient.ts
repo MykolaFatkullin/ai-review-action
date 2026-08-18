@@ -8,6 +8,7 @@ import {
   extractRightSideLineDetailsFromPatch,
   extractRightSideLinesFromPatch
 } from "../utils/parseGithubPatch.js";
+import * as core from "@actions/core";
 
 export class GithubClient {
   private readonly context: GithubContext;
@@ -63,13 +64,19 @@ export class GithubClient {
   }
 
   async getChangedFiles(): Promise<ChangedFile[]> {
-    const response = await this.octokit.rest.pulls.listFiles({
-      owner: this.context.owner,
-      repo: this.context.repo,
-      pull_number: this.context.pullRequestNumber,
-    });
+    const files = await this.octokit.paginate(
+      this.octokit.rest.pulls.listFiles,
+      {
+        owner: this.context.owner,
+        repo: this.context.repo,
+        pull_number: this.context.pullRequestNumber,
+        per_page: 100,
+      },
+    );
 
-    return response.data
+    core.info(`GitHub returned ${files.length} changed files`);
+
+    return files
       .filter(file => file.status !== "removed" && file.patch)
       .map(file => ({
         path: file.filename,

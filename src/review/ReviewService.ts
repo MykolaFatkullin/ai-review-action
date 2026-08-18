@@ -24,6 +24,8 @@ export class ReviewService {
     const files = await this.github.getChangedFiles();
     const filteredFiles = this.promptBuilder.filterFiles(files, this.excludedFilePatterns);
 
+    core.info(`Files after filtering: ${filteredFiles.length}`);
+
     if (filteredFiles.length === 0) {
       core.info("Skipping AI review: all changed files were excluded by the file filter.");
       return;

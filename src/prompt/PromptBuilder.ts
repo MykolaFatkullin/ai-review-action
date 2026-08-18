@@ -76,20 +76,24 @@ export class PromptBuilder {
       userPrompts.push(`## ${file.path}`);
 
       userPrompts.push("Allowed RIGHT-side line numbers for review comments:");
-      userPrompts.push(file.rightLines.length > 0 ? file.rightLines.join(", ") : "none");
+      userPrompts.push(
+        file.rightLines.length > 0
+          ? file.rightLines.join(", ")
+          : "none",
+      );
 
       userPrompts.push("RIGHT-side line-numbered view:");
       userPrompts.push("```text");
+
       userPrompts.push(
         file.rightSideLines
-          .map(line => `${line.line}${line.isAdded ? " +" : "  "}: ${line.content}`)
+          .map(
+            line =>
+              `${line.line}${line.isAdded ? " +" : "  "}: ${line.content}`,
+          )
           .join("\n"),
       );
-      userPrompts.push("```");
 
-      userPrompts.push("Original diff:");
-      userPrompts.push("```diff");
-      userPrompts.push(file.patch);
       userPrompts.push("```");
     }
 
@@ -103,8 +107,15 @@ export class PromptBuilder {
     const normalizedPath = path.replaceAll("\\", "/");
     const normalizedPattern = pattern.replaceAll("\\", "/");
 
-    return this.patternToRegExp(normalizedPattern).test(normalizedPath)
-      || (!normalizedPattern.includes("/") && this.patternToRegExp(normalizedPattern).test(normalizedPath.split("/").at(-1) ?? ""));
+    return (
+      this.patternToRegExp(normalizedPattern).test(normalizedPath)
+      || (
+        !normalizedPattern.includes("/")
+        && this.patternToRegExp(normalizedPattern).test(
+          normalizedPath.split("/").at(-1) ?? "",
+        )
+      )
+    );
   }
 
   private patternToRegExp(pattern: string): RegExp {
