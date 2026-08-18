@@ -24303,6 +24303,7 @@ var ReviewService = class {
     const context3 = await this.github.getReviewContext();
     const files = await this.github.getChangedFiles();
     const filteredFiles = this.promptBuilder.filterFiles(files, this.excludedFilePatterns);
+    info(`Files after filtering: ${filteredFiles.length}`);
     if (filteredFiles.length === 0) {
       info("Skipping AI review: all changed files were excluded by the file filter.");
       return;
@@ -24442,12 +24443,17 @@ var GithubClient = class {
     };
   }
   async getChangedFiles() {
-    const response = await this.octokit.rest.pulls.listFiles({
-      owner: this.context.owner,
-      repo: this.context.repo,
-      pull_number: this.context.pullRequestNumber
-    });
-    return response.data.filter((file2) => file2.status !== "removed" && file2.patch).map((file2) => ({
+    const files = await this.octokit.paginate(
+      this.octokit.rest.pulls.listFiles,
+      {
+        owner: this.context.owner,
+        repo: this.context.repo,
+        pull_number: this.context.pullRequestNumber,
+        per_page: 100
+      }
+    );
+    info(`GitHub returned ${files.length} changed files`);
+    return files.filter((file2) => file2.status !== "removed" && file2.patch).map((file2) => ({
       path: file2.filename,
       patch: file2.patch,
       rightLines: extractRightSideLinesFromPatch(file2.patch),
@@ -24560,16 +24566,16 @@ var PromptBuilder = class {
     for (const file2 of files) {
       userPrompts.push(`## ${file2.path}`);
       userPrompts.push("Allowed RIGHT-side line numbers for review comments:");
-      userPrompts.push(file2.rightLines.length > 0 ? file2.rightLines.join(", ") : "none");
+      userPrompts.push(
+        file2.rightLines.length > 0 ? file2.rightLines.join(", ") : "none"
+      );
       userPrompts.push("RIGHT-side line-numbered view:");
       userPrompts.push("```text");
       userPrompts.push(
-        file2.rightSideLines.map((line) => `${line.line}${line.isAdded ? " +" : "  "}: ${line.content}`).join("\n")
+        file2.rightSideLines.map(
+          (line) => `${line.line}${line.isAdded ? " +" : "  "}: ${line.content}`
+        ).join("\n")
       );
-      userPrompts.push("```");
-      userPrompts.push("Original diff:");
-      userPrompts.push("```diff");
-      userPrompts.push(file2.patch);
       userPrompts.push("```");
     }
     return {
@@ -24580,7 +24586,9 @@ var PromptBuilder = class {
   matchesPattern(path2, pattern) {
     const normalizedPath = path2.replaceAll("\\", "/");
     const normalizedPattern = pattern.replaceAll("\\", "/");
-    return this.patternToRegExp(normalizedPattern).test(normalizedPath) || !normalizedPattern.includes("/") && this.patternToRegExp(normalizedPattern).test(normalizedPath.split("/").at(-1) ?? "");
+    return this.patternToRegExp(normalizedPattern).test(normalizedPath) || !normalizedPattern.includes("/") && this.patternToRegExp(normalizedPattern).test(
+      normalizedPath.split("/").at(-1) ?? ""
+    );
   }
   patternToRegExp(pattern) {
     const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&").replaceAll("**", "\0").replaceAll("*", "[^/]*").replaceAll("?", "[^/]").replaceAll("\0", ".*");
